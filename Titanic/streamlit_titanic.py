@@ -12,12 +12,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from matplotlib.colors import ListedColormap
-from sklearn.feature_selection import SequentialFeatureSelector
-from sklearn.model_selection import GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.svm import LinearSVC
-from sklearn.metrics import roc_curve, roc_auc_score, accuracy_score
+from sklearn.metrics import roc_curve, roc_auc_score, RocCurveDisplay, precision_recall_curve, auc, PrecisionRecallDisplay
 
 # Need to remove unnecessary imports
 
@@ -82,59 +79,49 @@ y_train = train[['Survived']]
 x_test = test[['Male', 'Age', 'SibSp', 'Parch', 'Fare','class_1', 'class_2', 'class_3']]
 y_test = gender_submission[['Survived']]
 
-
-
-model_accuracy_titanic_compare = {}
-
-def roc_auc_func(mod, scaler, x_train_features, y_train_labels, x_test_features, y_test_labels):
-    x_train_scaled = scaler.fit_transform(x_train_features)
-    x_test_scaled = scaler.transform(x_test_features)
+def scale_fit(mod, scaler, x_train, y_train):
+    x_train_scaled = scaler.fit_transform(x_train)
+    y_train_labels = np.ravel(y_train)
     
-    y_train_labels = np.ravel(y_train_labels)
-    mod.fit(x_train_scaled, y_train_labels)
-    y_proba = mod.predict_proba(x_test_scaled)[:, 1]
-    
-    # Compute ROC curve and ROC area
-    fpr, tpr, _ = roc_curve(y_test_labels, y_proba)
-    roc_auc = roc_auc_score(y_test_labels, y_proba)
-    
-    return fpr, tpr, roc_auc
+    return mod.fit(x_train_scaled, y_train_labels)
 
 def predict_func(mod, scaler,user_params, x_train_features = x_train, y_train_labels = y_train):
     x_train_scaled = scaler.fit_transform(x_train_features)
     y_train_labels = np.ravel(y_train_labels)
     mod.fit(x_train_scaled, y_train_labels)
     prediction = mod.predict(user_params)
-    
     return prediction
+
 
 standard_scaler = StandardScaler()
 minmax_scaler = MinMaxScaler()
 robust_scaler = RobustScaler()
 
 def home():
-    st.write("# Home Page")
-    st.write("Welcome to the Home Page")
     st.write("""
     # Titanic ML Exploration Project
+""")
+    
+    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/titanic.jpeg",caption = "Titanic", use_column_width= True)
 
-    Below is an overview of what I learned and how I learned it.
+    st.write("""
+    This project is an exploration of the Titanic kaggle dataset and my attempt to model the survival outcome based on certain variables in the dataset.
             
-    ### Starting Dataset
+    ### Original Dataset
             """)
 
-    st.write(df_data.head())
+    st.write(df_data)
 
-    st.write("## Test and Train datasets!")
-    st.write('### Test')
-    st.write(test.head())
-    st.write('### Train')
-    st.write(train.head())
+    st.write("### Test and Train datasets!")
+    st.write('#### Test')
+    st.write(test)
+    st.write('#### Train')
+    st.write(train)
 
-def exploration(y_train = y_train):
+def exploration(y_train = y_train, x_train = x_train, train = train):
     st.write("# Exploration page")
-    st.write("Here we'll talk about data exploration")
     st.write('## Feature Selection')
+    st.write("This feature selection was important to my analysis because it helped me to determine which variables I needed to pay the most attention to")
     importance_list = []
     y_train = np.ravel(y_train)
     feat_labels = x_train.columns
@@ -151,6 +138,60 @@ def exploration(y_train = y_train):
         importance_list.append({'Rank': rank, 'Feature': feature, 'Importance': importance})
     importance_df = pd.concat([pd.DataFrame([x]) for x in importance_list], ignore_index=True)
     st.write(importance_df)
+    st.write("## Exploring Important Variables")
+    st.write("### Age")
+    fig, ax = plt.subplots()
+    ax.hist(x_train['Age'], bins=30, color='skyblue', edgecolor='black')
+    ax.set_xlabel('Age')
+    ax.set_ylabel('Frequency')
+    ax.set_title('Histogram of Age')
+    st.pyplot(fig)
+    st.write("### Fare")
+    fig, ax = plt.subplots()
+    ax.hist(x_train['Fare'], bins=30, color='skyblue', edgecolor='black')
+    ax.set_xlabel('Fare')
+    ax.set_ylabel('Frequency')
+    ax.set_title('Histogram of Fare')
+    st.pyplot(fig)
+    st.write("### 'Zoomed in' Fare <200)")
+    fig, ax = plt.subplots()
+    ax.hist(x_train['Fare'], bins=30, color='skyblue', edgecolor='black')
+    ax.set_xlabel('Fare')
+    ax.set_ylabel('Frequency')
+    ax.set_title('Histogram of Fare')
+    ax.set_xlim(0, 200)
+    for i in range(0,500,25):
+        ax.axhline(i, color='gray', linestyle='--', linewidth=0.5)
+    st.pyplot(fig)
+    st.write("### 'Zoomed in' Fare (>200)")
+    fig, ax = plt.subplots()
+    ax.hist(x_train['Fare'], bins=30, color='skyblue', edgecolor='black')
+    ax.set_xlabel('Fare')
+    ax.set_ylabel('Frequency')
+    ax.set_title('Histogram of Fare')
+    ax.set_xlim(200, 520)
+    ax.set_ylim(0,10)
+    for i in range(0,10):
+        ax.axhline(i, color='gray', linestyle='--', linewidth=0.5)
+    st.pyplot(fig)
+    st.write('''
+    ## Correlation
+             
+    ### Heatmap
+    ''')
+
+    corr_train = train.corr()
+    fig, ax = plt.subplots(figsize=(12, 10))
+    sns.heatmap(corr_train, annot=True, cmap='coolwarm', vmin=-1, vmax=1)
+    plt.title('Correlation Heatmap')
+    st.pyplot(fig)
+
+    st.write('''
+    Here you can see that there is a strong correlation between, Sex, Fare and Survived. 
+    
+    An interesting note: Age isn't highly correlated with survival, but our feature selection indicated that it was. 
+        ''')
+    
 
 def models():
     st.write("# Models page")
@@ -163,19 +204,18 @@ def models():
     2. LogisticRegression - MinMaxScaler (95.9% accuracy)
     3. SVC (rbf) - StandardScaler (94.3% accuracy)
             
-    (I got a couple of other 100% models but it would be boring to show 5 different 100% models)
+             
+    ### SVC with Linear Kernel
             ''')
+    
+    svm_mod = SVC(kernel='linear', C=1)
+    svm_mod = scale_fit(svm_mod, standard_scaler, x_train,y_train)
+    x_test_standard = standard_scaler.fit_transform(x_test)
+    svm_ROC_disp = RocCurveDisplay.from_estimator(svm_mod,x_test_standard,y_test)
+    svm_PR_disp = PrecisionRecallDisplay.from_estimator(svm_mod,x_test_standard,y_test)
 
-    st.write('### Logistic Regression')
-    lr_mod = LogisticRegression()
-    lr_fpr,lr_tpr,lr_roc_auc = roc_auc_func(lr_mod, minmax_scaler, x_train, y_train, x_test, y_test)
-
-    # Plot ROC curve
-    st.write("#### LR ROC Curve")
-    st.write(f"ROC AUC: {lr_roc_auc:.2f}")
-
-    fig, ax = plt.subplots()
-    ax.plot(lr_fpr, lr_tpr, label=f"ROC Curve (AUC = {lr_roc_auc:.2f})")
+    fig, ax = plt.subplots(figsize = (12,8))
+    svm_ROC_disp.plot(ax = ax)
     ax.plot([0, 1], [0, 1], linestyle="--", label="Random")
     ax.set_xlabel("False Positive Rate")
     ax.set_ylabel("True Positive Rate")
@@ -183,23 +223,107 @@ def models():
     ax.legend()
     st.pyplot(fig)
 
+    st.write('#### PR Curve')
+
+    fig, ax = plt.subplots(figsize = (12,8))
+    svm_PR_disp.plot(ax=ax)
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_title("Precision - Recall Curve")
+    ax.legend()
+    st.pyplot(fig)
+
+    st.write('### Logistic Regression')
+
+    lr_mod = LogisticRegression()
+    lr_mod = scale_fit(lr_mod,standard_scaler, x_train, y_train)
+    x_test_minmax = minmax_scaler.fit_transform(x_test)
+    lr_ROC_disp = RocCurveDisplay.from_estimator(lr_mod,x_test_minmax,y_test)
+    lr_PR_disp = PrecisionRecallDisplay.from_estimator(lr_mod,x_test_minmax,y_test)
+
+    st.write("#### LR ROC Curve")
+
+    fig, ax = plt.subplots(figsize = (12,8))
+    lr_ROC_disp.plot(ax = ax)
+    ax.plot([0, 1], [0, 1], linestyle="--", label="Random")
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate")
+    ax.set_title("Receiver Operating Characteristic (ROC) Curve")
+    ax.legend()
+    st.pyplot(fig)
+
+    st.write('#### PR Curve')
+
+    fig, ax = plt.subplots(figsize = (12,8))
+    lr_PR_disp.plot(ax=ax)
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_title("Precision - Recall Curve")
+    ax.legend()
+    st.pyplot(fig)
+    
+    st.write('### SVC with RBF (Radial Basis Function) Kernel')
+
+    svc_rbf_mod = SVC(kernel = "rbf", C = 1, random_state = 1, gamma = 0.1)
+    svc_rbf_mod = scale_fit(svc_rbf_mod,standard_scaler,x_train,y_train)
+    svc_ROC_disp = RocCurveDisplay.from_estimator(svc_rbf_mod, x_test_standard,y_test)
+    svc_PR_disp = PrecisionRecallDisplay.from_estimator(svc_rbf_mod,x_test_standard,y_test)
+
+    st.write("#### SVC ROC Curve")
+
+    fig, ax = plt.subplots(figsize = (12,8))
+    svc_ROC_disp.plot(ax = ax)
+    ax.plot([0, 1], [0, 1], linestyle="--", label="Random")
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate")
+    ax.set_title("Receiver Operating Characteristic (ROC) Curve")
+    ax.legend()
+    st.pyplot(fig)
+
+    st.write('#### PR Curve')
+
+    fig,ax = plt.subplots(figsize = (12,8))
+    svc_PR_disp.plot(ax = ax)
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_title("Precision - Recall Curve")
+    st.pyplot(fig)
+
+
+
+    
+    return prediction
+
 def prediction():
     st.write('# Prediction page')
     st.write("Would you have survived on the titanic?")
     st.sidebar.header('User Input Params')
-
-
     st.subheader('User Input Parameters')
 
     def user_input_features():
         Male = st.sidebar.slider('Male (0 = No, 1 = Yes)', 0, 1, 0)
-        Age = st.sidebar.slider('Age',0,100,20)
-        SibSp = st.sidebar.slider('Number of Siblings and/or Spouses', 0,20,0)
-        Parch = st.sidebar.slider('Number of Parents and/or Children', 0,20,0)
-        Fare = st.sidebar.slider('Fare',0,513,20)
-        class_1 = st.sidebar.slider('Class 1',0,1,1)
-        class_2 = st.sidebar.slider('Class 2',0,1,0)
-        class_3 = st.sidebar.slider('Class 3',0,1,0)
+        Age = st.sidebar.text_input('Enter your Age:','20')
+        Sib = st.sidebar.text_input('Number of Siblings', 0,15,2)
+        Sp = st.sidebar.slider('Spouse (0 = No, 1 = Yes)',0,1,0)
+        SibSp = int(Sib) + Sp
+        Par = st.sidebar.text_input('Number of Parents:','2')
+        ch = st.sidebar.text_input('Number of Children', 0,15,0)
+        Parch = int(Par) + int(ch)
+        Fare = st.sidebar.text_input('Fare','20')
+        Fare = int(Fare)
+        Class = st.sidebar.slider('Class',1,3,1)
+        if Class == 1:
+            class_1 = 1
+            class_2 = 0
+            class_3 = 0
+        elif Class == 2:
+            class_1 = 0
+            class_2 = 1
+            class_3 = 0
+        else:
+            class_1 = 0
+            class_2 = 0
+            class_3 = 1
         data ={"Male":Male,
             "Age": Age,
             "SibSp": SibSp,
@@ -212,8 +336,15 @@ def prediction():
         return features
     df = user_input_features()
     st.write(df)
-    st.write(predict_func(LogisticRegression(),user_params=df))
     
+    lr_mod = LogisticRegression()
+    lr_mod = scale_fit(lr_mod,standard_scaler,x_train,y_train)
+    
+    user_scaled = standard_scaler.fit_transform(df)
+    if lr_mod.predict(df) == 1:
+        st.write('Congratulations, you would have survived!')
+    else:
+        st.write('Tough luck, you would have died.')
 
 
 
