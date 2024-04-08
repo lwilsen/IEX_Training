@@ -1,32 +1,22 @@
 import pandas as pd
 import numpy as np
-import sklearn as sk
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import RobustScaler
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
-from matplotlib.colors import ListedColormap
 from sklearn.svm import SVC
-from sklearn.svm import LinearSVC
-from sklearn.metrics import roc_curve, roc_auc_score, RocCurveDisplay, precision_recall_curve, auc, PrecisionRecallDisplay
-
-# Need to remove unnecessary imports
-
+from sklearn.metrics import RocCurveDisplay, PrecisionRecallDisplay
 import streamlit as st
+import plotly.express as px
 
 train = pd.read_csv('titanic_train.csv')
 test = pd.read_csv('titanic_test.csv')
 gender_submission = pd.read_csv('gender_submission.csv')
 
 df_data = pd.concat([train,test])
-
-# title based age imputing
 
 df_data["Title"] = df_data.Name.str.extract(' ([A-Za-z]+)\.', expand=False)
 
@@ -40,20 +30,16 @@ df_data["Title"] = df_data["Title"].replace(['Lady', 'Countess','Sir'], 'Honor')
 train["Title"] = df_data['Title'][:891]
 test["Title"] = df_data['Title'][891:]
 
-# convert Title categories to Columns
 titledummies=pd.get_dummies(train[['Title']], prefix_sep='_') #Title
 train = pd.concat([train, titledummies], axis=1) 
 ttitledummies=pd.get_dummies(test[['Title']], prefix_sep='_') #Title
 test = pd.concat([test, ttitledummies], axis=1) 
 
-#df_data[df_data['Title'] == "Master"]['Age'].describe()
 
 titles = ['Master', 'Miss', 'Mr', 'Mrs', 'Military','Honor']
 for title in titles:
     age_to_impute = df_data.groupby('Title')['Age'].median()[title]
-    #print(f'Title:{title}, Median:{age_to_impute}')
     df_data.loc[(df_data['Age'].isnull()) & (df_data['Title'] == title), 'Age'] = age_to_impute
-# Age in df_train and df_test:
 train["Age"] = df_data['Age'][:891]
 test["Age"] = df_data['Age'][891:]
 train = pd.get_dummies(train, columns=['Pclass'], prefix=['class'])
@@ -92,7 +78,6 @@ def predict_func(mod, scaler,user_params, x_train_features = x_train, y_train_la
     prediction = mod.predict(user_params)
     return prediction
 
-
 standard_scaler = StandardScaler()
 minmax_scaler = MinMaxScaler()
 robust_scaler = RobustScaler()
@@ -105,21 +90,36 @@ def home():
     st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/titanic.jpeg",caption = "Titanic", use_column_width= True)
 
     st.write("""
+    ## Project Overview
+    
     This project is an exploration of the Titanic kaggle dataset and my attempt to model the survival outcome based on certain variables in the dataset.
             
-    ### Original Dataset
+    ### Training Dataset
             """)
 
-    st.write(df_data)
 
-    st.write("### Test and Train datasets!")
-    st.write('#### Test')
-    st.write(test)
-    st.write('#### Train')
-    st.write(train)
 
 def exploration(y_train = y_train, x_train = x_train, train = train):
     st.write("# Exploration page")
+    st.write("""
+    ---       
+    ## Columns and what they represent
+            
+    | Column Name    | Description                                                                     |
+    |----------------|---------------------------------------------------------------------------------|
+    | PassengerId    | A unique numerical identifier assigned to each passenger.                         |
+    | Survived       | Survival status of the passenger (0 = No, 1 = Yes).                              |
+    | Pclass         | The passenger's ticket class (1 = 1st Class, 2 = 2nd Class, 3 = 3rd Class).   |
+    | Sex            | The passenger's gender (male, female).                                         |
+    | Age            | The passenger's age in years. Fractional values may exist for younger children. |
+    | SibSp          | The number of siblings or spouses traveling with the passenger.                   |
+    | Parch          | The number of parents or children traveling with the passenger.                   |
+    | Fare           | The price the passenger paid for their ticket.                                  |
+    | class_1 - class_3          | The Passenger's room class.                                    |
+    ---
+    """)
+    st.write(train)
+    st.write('Above, the "Male" column refers to sex (1 if male, 0 if female)')
     st.write('## Feature Selection')
     st.write("This feature selection was important to my analysis because it helped me to determine which variables I needed to pay the most attention to")
     importance_list = []
@@ -141,48 +141,41 @@ def exploration(y_train = y_train, x_train = x_train, train = train):
     st.write("## Exploring Important Variables")
     st.write("### Age")
     fig, ax = plt.subplots()
-    ax.hist(x_train['Age'], bins=30, color='skyblue', edgecolor='black')
+    ax.hist(x_train['Age'], bins=6, color='#7699F6', edgecolor='black')
     ax.set_xlabel('Age')
     ax.set_ylabel('Frequency')
     ax.set_title('Histogram of Age')
     st.pyplot(fig)
     st.write("### Fare")
     fig, ax = plt.subplots()
-    ax.hist(x_train['Fare'], bins=30, color='skyblue', edgecolor='black')
+    ax.hist(x_train['Fare'], bins=30, color='#F7A98B', edgecolor='black')
     ax.set_xlabel('Fare')
     ax.set_ylabel('Frequency')
     ax.set_title('Histogram of Fare')
     st.pyplot(fig)
-    st.write("### 'Zoomed in' Fare <200)")
-    fig, ax = plt.subplots()
-    ax.hist(x_train['Fare'], bins=30, color='skyblue', edgecolor='black')
-    ax.set_xlabel('Fare')
-    ax.set_ylabel('Frequency')
-    ax.set_title('Histogram of Fare')
-    ax.set_xlim(0, 200)
-    for i in range(0,500,25):
-        ax.axhline(i, color='gray', linestyle='--', linewidth=0.5)
-    st.pyplot(fig)
-    st.write("### 'Zoomed in' Fare (>200)")
-    fig, ax = plt.subplots()
-    ax.hist(x_train['Fare'], bins=30, color='skyblue', edgecolor='black')
-    ax.set_xlabel('Fare')
-    ax.set_ylabel('Frequency')
-    ax.set_title('Histogram of Fare')
-    ax.set_xlim(200, 520)
-    ax.set_ylim(0,10)
-    for i in range(0,10):
-        ax.axhline(i, color='gray', linestyle='--', linewidth=0.5)
-    st.pyplot(fig)
+
+    df_pie = train.iloc[:,[1,-3,-2,-1]]
+    df_pie['Class'] = df_pie[["class_1","class_2","class_3"]].idxmax(axis=1).str.split('_').str[1]
+    df_pie = df_pie.drop(["class_1","class_2","class_3"], axis = 1)
+    st.dataframe(df_pie)
+
+    fig = px.pie(df_pie, names = 'Class', values = 'Survived',title='Survived By Class')
+    fig.update_layout(legend=dict(title='Class'))
+
+    st.plotly_chart(fig)
+
     st.write('''
     ## Correlation
              
     ### Heatmap
     ''')
-
+    surv = train.iloc[:,1]
+    train = train.drop(['Survived'],axis = 1)
+    train['Survived'] = surv
     corr_train = train.corr()
+    matrix = np.triu(corr_train)
     fig, ax = plt.subplots(figsize=(12, 10))
-    sns.heatmap(corr_train, annot=True, cmap='coolwarm', vmin=-1, vmax=1)
+    sns.heatmap(corr_train, annot=True, mask=matrix, cmap='coolwarm', vmin=-1, vmax=1)
     plt.title('Correlation Heatmap')
     st.pyplot(fig)
 
@@ -191,7 +184,7 @@ def exploration(y_train = y_train, x_train = x_train, train = train):
     
     An interesting note: Age isn't highly correlated with survival, but our feature selection indicated that it was. 
         ''')
-    
+
 
 def models():
     st.write("# Models page")
@@ -312,18 +305,9 @@ def prediction():
         Fare = st.sidebar.text_input('Fare','20')
         Fare = int(Fare)
         Class = st.sidebar.slider('Class',1,3,1)
-        if Class == 1:
-            class_1 = 1
-            class_2 = 0
-            class_3 = 0
-        elif Class == 2:
-            class_1 = 0
-            class_2 = 1
-            class_3 = 0
-        else:
-            class_1 = 0
-            class_2 = 0
-            class_3 = 1
+        class_to_one_hot = lambda Class: [1,0,0] if Class == 1 else [0,1,0] if Class == 2 else [0,0,1]
+        class_1,class_2,class_3 = class_to_one_hot(Class)
+
         data ={"Male":Male,
             "Age": Age,
             "SibSp": SibSp,
