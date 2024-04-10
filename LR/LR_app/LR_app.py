@@ -16,9 +16,10 @@ Author: Luke Wilsen
 
 This was data came from the assessor's office of Ames Iowa, and contains information used to computing 
         assessed values for individual residential properties sold in ames, IA from 2006 to 2010.
-         
----
-         
+    """)     
+st.write("""---""")
+st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/LR/LR_app/Ames_Iowa.jpg",caption="Ames Iowa", use_column_width=True)
+st.write("""        
 I chose to look at a subsection of the entire dataset, selecting only the following columns:
 """)
 

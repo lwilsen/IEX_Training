@@ -17,21 +17,28 @@ with open('data.pkl','rb') as f:
     df = pickle.load(f)
 
 df['Log_saleprice'] = np.log(df['SalePrice'])
+df['sqrt_saleprice'] = np.sqrt(df['SalePrice'])
 
 target = 'SalePrice'
 log_target = 'Log_saleprice'
-features = df.columns[(df.columns != target) & (df.columns != log_target)]
-log_feats = df.columns[(df.columns != target) & (df.columns != log_target)]
+sqrt_target = 'sqrt_saleprice'
+features = df.columns[(df.columns != target) & (df.columns != log_target) & (df.columns != sqrt_target)]
+log_feats = df.columns[(df.columns != target) & (df.columns != log_target) & (df.columns != sqrt_target)]
+sqrt_feats = df.columns[(df.columns != target) & (df.columns != log_target) & (df.columns != sqrt_target)]
 
 X = df[features].values
 X_log = df[log_feats]
+X_sqrt = df[sqrt_feats]
 y = df[target].values
 y_log = df[log_target]
+y_sqrt = df[sqrt_target]
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=123)
 
 Xl_train, Xl_test,yl_train,yl_test = train_test_split(X_log,y_log,test_size=0.3,random_state=123)
+
+Xsqrt_train, Xsqrt_test,ysqrt_train,ysqrt_test = train_test_split(X_sqrt,y_sqrt,test_size=0.3,random_state=123)
 
 mod_stats = {}
 
@@ -40,15 +47,12 @@ def reg_mod(model, X_train = X_train,X_test = X_test,y_train = y_train,y_test = 
     y_train_pred = model.predict(X_train)
     y_test_pred = model.predict(X_test)
 
-    x_max = np.max([np.max(y_train_pred), np.max(y_test_pred)])
-    x_min = np.min([np.min(y_train_pred), np.min(y_test_pred)])
-
     # Create subplots
     fig = make_subplots(rows=1, cols=2, subplot_titles=('Test data', 'Training data'))
 
     # Add traces
-    fig.add_trace(px.scatter(x=y_test_pred, y=y_test_pred - y_test, color_discrete_sequence=['limegreen']).data[0], row=1, col=1)
-    fig.add_trace(px.scatter(x=y_train_pred, y=y_train_pred - y_train, color_discrete_sequence=['steelblue']).data[0], row=1, col=2)
+    fig.add_trace(px.scatter(x=y_test_pred, y=y_test_pred - y_test, color_discrete_sequence=['limegreen'],opacity = 0.5).data[0], row=1, col=1)
+    fig.add_trace(px.scatter(x=y_train_pred, y=y_train_pred - y_train, color_discrete_sequence=['steelblue'], opacity=0.5).data[0], row=1, col=2)
 
 
     fig.add_hline(y=0, line_dash='dash', line_color='white', line_width=1, row=1, col=1)
@@ -60,7 +64,6 @@ def reg_mod(model, X_train = X_train,X_test = X_test,y_train = y_train,y_test = 
         showlegend=False,
         xaxis=dict(title='Predicted values'),
         yaxis=dict(title='Residuals'),
-        yaxis2=dict(title='Residuals'),
         xaxis2=dict(title='Predicted values'),
         margin=dict(l=40, r=40, t=40, b=40),
         hovermode='closest'
@@ -107,7 +110,12 @@ with open('tree_mod.pkl', 'rb') as f:
 reg_mod(slr)
 st.write('''As you can see, the residuals of the regular sale price are very skewed. Transforming the data 
 allows us to satisfy the assumptions of linear regression models ''')
+st.write('### Log Transformation')
 reg_mod(slr, X_train = Xl_train,X_test = Xl_test,y_train = yl_train,y_test = yl_test)
+st.write('### Square Root Transformation')
+reg_mod(slr, Xsqrt_train, Xsqrt_test,ysqrt_train,ysqrt_test)
+st.write("Log transform not significantly different from the square root transform.")
+st.write("- Choosing to use log transform for the rest of the models")
 reg_mod(ridge, X_train = Xl_train,X_test = Xl_test,y_train = yl_train,y_test = yl_test)
 reg_mod(lasso, X_train = Xl_train,X_test = Xl_test,y_train = yl_train,y_test = yl_test)
 reg_mod(elanet, X_train = Xl_train,X_test = Xl_test,y_train = yl_train,y_test = yl_test)
