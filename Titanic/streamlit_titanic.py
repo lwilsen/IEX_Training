@@ -146,6 +146,9 @@ def exploration(y_train = y_train, x_train = x_train, train = train):
     ax.set_ylabel('Frequency')
     ax.set_title('Histogram of Age')
     st.pyplot(fig)
+    fig = px.violin(train, x = 'Survived', y = 'Age')
+    st.plotly_chart(fig)
+    st.write('- Interpretation of the effect of age on survival chances is difficult.')
     st.write("### Fare")
     fig, ax = plt.subplots()
     ax.hist(x_train['Fare'], bins=30, color='#F7A98B', edgecolor='black')
@@ -153,16 +156,39 @@ def exploration(y_train = y_train, x_train = x_train, train = train):
     ax.set_ylabel('Frequency')
     ax.set_title('Histogram of Fare')
     st.pyplot(fig)
+    fig = px.violin(train, x = 'Survived', y = 'Fare')
+    st.plotly_chart(fig)
+    st.write('- Clear that higher fares **usually** increased probability of survival')
 
     df_pie = train.iloc[:,[1,-3,-2,-1]]
     df_pie['Class'] = df_pie[["class_1","class_2","class_3"]].idxmax(axis=1).str.split('_').str[1]
     df_pie = df_pie.drop(["class_1","class_2","class_3"], axis = 1)
-    st.dataframe(df_pie)
 
-    fig = px.pie(df_pie, names = 'Class', values = 'Survived',title='Survived By Class')
+    fig = px.pie(df_pie, names = 'Class', values = 'Survived',title='Survivor Breakdown by Class')
     fig.update_layout(legend=dict(title='Class'))
-
     st.plotly_chart(fig)
+    st.write("""
+- Interesting that survival percentage for 3rd class was greater than that of 2nd class
+             """)
+    
+    fig = px.pie(df_pie, names = 'Class',title='Passenger Breakdown by Class')
+    fig.update_layout(legend=dict(title='Class'))
+    st.plotly_chart(fig)
+    st.write("""
+- Majority of passengers were 3rd class; explains why % of survivors in 1st class roughly equals % of survivors in 3rd class
+    - 1st class has an positive impact on survival, 2nd class has a very slightly positive impact, and 3rd class has a negative impact.
+             """)
+
+    fig = px.pie(train, names = 'Male', values='Survived', title = 'Survivor Breakdown by Gender',
+                 color = 'Male',
+                 color_discrete_map={0:'lightblue',1:'darkblue'})
+    fig.update_layout(legend = dict(title = 'Male'))
+    st.plotly_chart(fig)
+    fig = px.pie(train, names = 'Male', title = 'Passenger Breakdown by Gender',
+                 color = 'Male',
+                 color_discrete_map={0:'lightblue',1:'darkblue'})
+    st.plotly_chart(fig)
+    st.write('- Clearly being Male had a very negative impact on surival')
 
     st.write('''
     ## Correlation
@@ -180,25 +206,19 @@ def exploration(y_train = y_train, x_train = x_train, train = train):
     st.pyplot(fig)
 
     st.write('''
-    Here you can see that there is a strong correlation between, Sex, Fare and Survived. 
+    Here you can see that there is a strong correlation between, Sex, Fare, Class and Survived. 
     
-    An interesting note: Age isn't highly correlated with survival, but our feature selection indicated that it was. 
+    An interesting note: As seen previously, age isn't highly correlated with survival, but our feature selection indicated that it was. 
         ''')
 
 
 def models():
     st.write("# Models page")
-    st.write("Here we'll talk about a couple of models")
     st.write('''
-    ## Model Creation
-
-    The best models I created were:
+    #### The best models I created were:
     1. SVC (linear) - MinMaxScaler (100 % accuracy)
     2. LogisticRegression - MinMaxScaler (95.9% accuracy)
     3. SVC (rbf) - StandardScaler (94.3% accuracy)
-            
-             
-    ### SVC with Linear Kernel
             ''')
     
     svm_mod = SVC(kernel='linear', C=1)
@@ -207,76 +227,90 @@ def models():
     svm_ROC_disp = RocCurveDisplay.from_estimator(svm_mod,x_test_standard,y_test)
     svm_PR_disp = PrecisionRecallDisplay.from_estimator(svm_mod,x_test_standard,y_test)
 
-    fig, ax = plt.subplots(figsize = (12,8))
-    svm_ROC_disp.plot(ax = ax)
-    ax.plot([0, 1], [0, 1], linestyle="--", label="Random")
-    ax.set_xlabel("False Positive Rate")
-    ax.set_ylabel("True Positive Rate")
-    ax.set_title("Receiver Operating Characteristic (ROC) Curve")
-    ax.legend()
-    st.pyplot(fig)
-
-    st.write('#### PR Curve')
-
-    fig, ax = plt.subplots(figsize = (12,8))
-    svm_PR_disp.plot(ax=ax)
-    ax.set_xlabel("Recall")
-    ax.set_ylabel("Precision")
-    ax.set_title("Precision - Recall Curve")
-    ax.legend()
-    st.pyplot(fig)
-
-    st.write('### Logistic Regression')
-
     lr_mod = LogisticRegression()
     lr_mod = scale_fit(lr_mod,standard_scaler, x_train, y_train)
     x_test_minmax = minmax_scaler.fit_transform(x_test)
     lr_ROC_disp = RocCurveDisplay.from_estimator(lr_mod,x_test_minmax,y_test)
     lr_PR_disp = PrecisionRecallDisplay.from_estimator(lr_mod,x_test_minmax,y_test)
 
-    st.write("#### LR ROC Curve")
-
-    fig, ax = plt.subplots(figsize = (12,8))
-    lr_ROC_disp.plot(ax = ax)
-    ax.plot([0, 1], [0, 1], linestyle="--", label="Random")
-    ax.set_xlabel("False Positive Rate")
-    ax.set_ylabel("True Positive Rate")
-    ax.set_title("Receiver Operating Characteristic (ROC) Curve")
-    ax.legend()
-    st.pyplot(fig)
-
-    st.write('#### PR Curve')
-
-    fig, ax = plt.subplots(figsize = (12,8))
-    lr_PR_disp.plot(ax=ax)
-    ax.set_xlabel("Recall")
-    ax.set_ylabel("Precision")
-    ax.set_title("Precision - Recall Curve")
-    ax.legend()
-    st.pyplot(fig)
-    
-    st.write('### SVC with RBF (Radial Basis Function) Kernel')
-
     svc_rbf_mod = SVC(kernel = "rbf", C = 1, random_state = 1, gamma = 0.1)
     svc_rbf_mod = scale_fit(svc_rbf_mod,standard_scaler,x_train,y_train)
     svc_ROC_disp = RocCurveDisplay.from_estimator(svc_rbf_mod, x_test_standard,y_test)
     svc_PR_disp = PrecisionRecallDisplay.from_estimator(svc_rbf_mod,x_test_standard,y_test)
 
-    st.write("#### SVC ROC Curve")
-
+    st.write('#### SVC with Linear Kernel ROC Curve (100%)')
     fig, ax = plt.subplots(figsize = (12,8))
-    svc_ROC_disp.plot(ax = ax)
-    ax.plot([0, 1], [0, 1], linestyle="--", label="Random")
+    svm_ROC_disp.plot(ax = ax, linewidth = 3)
+    ax.plot([0, 1], [0, 1], linestyle="--", label="Random",linewidth = 3)
+    ax.set_xlim([-1,1.2])
+    ax.set_ylim([-0.2,2.2])
+    ax.grid(True)
     ax.set_xlabel("False Positive Rate")
     ax.set_ylabel("True Positive Rate")
     ax.set_title("Receiver Operating Characteristic (ROC) Curve")
     ax.legend()
     st.pyplot(fig)
 
-    st.write('#### PR Curve')
+    st.write("#### LogisticRegression ROC Curve (95.9%)")
 
+    fig, ax = plt.subplots(figsize = (12,8))
+    lr_ROC_disp.plot(ax = ax,linewidth = 3)
+    ax.plot([0, 1], [0, 1], linestyle="--", label="Random",linewidth = 3)
+    ax.set_xlim([-1,1.2])
+    ax.set_ylim([-0.2,2.2])
+    ax.grid(True)
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate")
+    ax.set_title("Receiver Operating Characteristic (ROC) Curve")
+    ax.legend()
+    st.pyplot(fig)
+
+    st.write("#### SVC with RBF (Radial Basis Function) Kernel ROC Curve (94.3%)")
+
+    fig, ax = plt.subplots(figsize = (12,8))
+    svc_ROC_disp.plot(ax = ax,linewidth = 3)
+    ax.plot([0, 1], [0, 1], linestyle="--", label="Random",linewidth = 3)
+    ax.set_xlim([-1,1.2])
+    ax.set_ylim([-0.2,2.2])
+    ax.grid(True)
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate")
+    ax.set_title("Receiver Operating Characteristic (ROC) Curve")
+    ax.legend()
+    st.pyplot(fig)
+
+    st.write('#### SVC with Linear Kernel PR Curve (100%)')
+
+    fig, ax = plt.subplots(figsize = (12,8))
+    svm_PR_disp.plot(ax=ax,linewidth = 3)
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_xlim([-0.2,2.2])
+    ax.set_ylim([-0.2,2.2])
+    ax.grid(True)
+    ax.set_title("Precision - Recall Curve")
+    ax.legend()
+    st.pyplot(fig)
+
+    st.write('#### Logistic Regression PR Curve (95.9%)')
+
+    fig, ax = plt.subplots(figsize = (12,8))
+    lr_PR_disp.plot(ax=ax,linewidth = 3)
+    ax.set_xlim([-0.2,2.2])
+    ax.set_ylim([-0.2,2.2])
+    ax.grid(True)
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_title("Precision - Recall Curve")
+    ax.legend()
+    st.pyplot(fig)
+
+    st.write("#### SVC with RBF (Radial Basis Function) Kernel PR Curve (94.3%)")
     fig,ax = plt.subplots(figsize = (12,8))
-    svc_PR_disp.plot(ax = ax)
+    svc_PR_disp.plot(ax = ax,linewidth = 3)
+    ax.set_xlim([-0.2,2.2])
+    ax.set_ylim([-0.2,2.2])
+    ax.grid(True)
     ax.set_xlabel("Recall")
     ax.set_ylabel("Precision")
     ax.set_title("Precision - Recall Curve")
@@ -307,7 +341,6 @@ def prediction():
         Class = st.sidebar.slider('Class',1,3,1)
         class_to_one_hot = lambda Class: [1,0,0] if Class == 1 else [0,1,0] if Class == 2 else [0,0,1]
         class_1,class_2,class_3 = class_to_one_hot(Class)
-
         data ={"Male":Male,
             "Age": Age,
             "SibSp": SibSp,
@@ -324,11 +357,12 @@ def prediction():
     lr_mod = LogisticRegression()
     lr_mod = scale_fit(lr_mod,standard_scaler,x_train,y_train)
     
-    user_scaled = standard_scaler.fit_transform(df)
     if lr_mod.predict(df) == 1:
         st.write('Congratulations, you would have survived!')
+        st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/happy_sailor.jpg',use_column_width=True)
     else:
-        st.write('Tough luck, you would have died.')
+        st.write('Uh Oh.')
+        st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/you_died.png', use_column_width= True)
 
 
 
