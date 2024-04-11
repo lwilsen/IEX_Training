@@ -85,6 +85,7 @@ robust_scaler = RobustScaler()
 def home():
     st.write("""
     # Titanic ML Exploration Project
+    Author: Luke Wilsen
 """)
     
     st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/titanic.jpeg",caption = "Titanic", use_column_width= True)
@@ -93,8 +94,6 @@ def home():
     ## Project Overview
     
     This project is an exploration of the Titanic kaggle dataset and my attempt to model the survival outcome based on certain variables in the dataset.
-            
-    ### Training Dataset
             """)
 
 
