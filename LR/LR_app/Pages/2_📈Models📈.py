@@ -1,4 +1,3 @@
-# Need to use pickle to create the model in the main 
 import streamlit as st
 import pickle
 import pandas as pd
