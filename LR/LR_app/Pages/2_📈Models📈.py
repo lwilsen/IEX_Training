@@ -1,11 +1,16 @@
 import streamlit as st
 import pickle
 import pandas as pd
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, validation_curve
 import numpy as np
 import plotly.express as px
 from plotly.subplots import make_subplots
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import Ridge, LinearRegression
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, make_scorer, accuracy_score
+
 
 
 st.write('# Models page')
@@ -126,3 +131,56 @@ for regressor,metric in mod_stats.items():
     restructured.append(row)
 df = pd.DataFrame(restructured)
 st.dataframe(df,height = 200,width=700)
+
+pipeline = Pipeline([
+    ('standardscaler', StandardScaler()),
+    ('ridge', Ridge())
+])
+scoring = make_scorer(mean_absolute_error, greater_is_better=True)
+
+param_range = np.arange(0,10.1,0.1)
+train_scores, test_scores = validation_curve(
+                estimator=pipeline, 
+                X=X_train, 
+                y=y_train, 
+                param_name='ridge__alpha', 
+                param_range=param_range,
+                cv=5,
+                scoring = scoring)
+
+train_mean = np.mean(train_scores, axis=1)
+train_std = np.std(train_scores, axis=1)
+test_mean = np.mean(test_scores, axis=1)
+test_std = np.std(test_scores, axis=1)
+
+# Create a Matplotlib figure
+fig, ax = plt.subplots()
+
+# Plot the learning curves
+ax.plot(param_range, train_mean, 
+         color='blue', marker='o', 
+         markersize=5, label='Training accuracy')
+ax.fill_between(param_range, train_mean + train_std,
+                 train_mean - train_std, alpha=0.15,
+                 color='blue')
+
+ax.plot(param_range, test_mean, 
+         color='green', linestyle='--', 
+         marker='s', markersize=5, 
+         label='Validation accuracy')
+
+ax.fill_between(param_range, 
+                 test_mean + test_std,
+                 test_mean - test_std, 
+                 alpha=0.15, color='green')
+
+ax.grid()
+ax.legend(loc='center right')
+ax.set_xlabel('Parameter Alpha')
+ax.set_ylabel('Mean Absolute Error')
+ax.set_ylim([24530, 24730])
+fig.tight_layout()
+
+# Display the plot using Streamlit
+st.write("### Validation Curve for Ridge Regression based on the Alpha hyperparamter")
+st.pyplot(fig)

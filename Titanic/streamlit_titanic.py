@@ -11,6 +11,8 @@ from sklearn.svm import SVC
 from sklearn.metrics import RocCurveDisplay, PrecisionRecallDisplay
 import streamlit as st
 import plotly.express as px
+from sklearn.pipeline import Pipeline, make_pipeline
+from sklearn.model_selection import GridSearchCV, learning_curve
 
 train = pd.read_csv('titanic_train.csv')
 test = pd.read_csv('titanic_test.csv')
@@ -77,6 +79,8 @@ def predict_func(mod, scaler,user_params, x_train_features = x_train, y_train_la
     mod.fit(x_train_scaled, y_train_labels)
     prediction = mod.predict(user_params)
     return prediction
+
+
 
 standard_scaler = StandardScaler()
 minmax_scaler = MinMaxScaler()
@@ -219,7 +223,14 @@ def models():
     2. LogisticRegression - MinMaxScaler (95.9% accuracy)
     3. SVC (rbf) - StandardScaler (94.3% accuracy)
             ''')
+    best_params = {
+            "C":0.01291549665014884,
+            "class_weight":None,
+            "penalty":"l2",
+            "solver":"saga"
+            }   
     
+
     svm_mod = SVC(kernel='linear', C=1)
     svm_mod = scale_fit(svm_mod, standard_scaler, x_train,y_train)
     x_test_standard = standard_scaler.fit_transform(x_test)
@@ -248,6 +259,52 @@ def models():
     ax.set_ylabel("True Positive Rate")
     ax.set_title("Receiver Operating Characteristic (ROC) Curve")
     ax.legend()
+    st.pyplot(fig)
+
+    st.write("#### Logistic Regression Learning Curve")
+
+    pipe_lr = make_pipeline(MinMaxScaler(), LogisticRegression())
+    train_sizes, train_scores, test_scores =\
+                learning_curve(estimator=pipe_lr,
+                               X=x_train,
+                               y=y_train,
+                               train_sizes=np.linspace(0.1, 1.0, 10),
+                               cv=10,
+                               n_jobs=1)
+    
+    train_mean = np.mean(train_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
+
+    fig, ax = plt.subplots()
+
+    # Plot the learning curves
+    ax.plot(train_sizes, train_mean,
+            color='blue', marker='o',
+            markersize=5, label='Training accuracy')
+    ax.fill_between(train_sizes,
+                    train_mean + train_std,
+                    train_mean - train_std,
+                    alpha=0.15, color='blue')
+
+    ax.plot(train_sizes, test_mean,
+            color='green', linestyle='--',
+            marker='s', markersize=5,
+            label='Validation accuracy')
+    ax.fill_between(train_sizes,
+                    test_mean + test_std,
+                    test_mean - test_std,
+                    alpha=0.15, color='green')
+
+    ax.grid()
+    ax.set_xlabel('Number of training examples')
+    ax.set_ylabel('Accuracy')
+    ax.legend(loc='lower right')
+    ax.set_ylim([0, 1.03])
+    plt.tight_layout()
+
+    # Display the plot using Streamlit
     st.pyplot(fig)
 
     st.write("#### LogisticRegression ROC Curve (95.9%)")
@@ -318,7 +375,7 @@ def models():
 
 
     
-    return prediction
+    return prediction #Do I need this?
 
 def prediction():
     st.write('# Prediction page')
@@ -352,11 +409,39 @@ def prediction():
         return features
     df = user_input_features()
     st.write(df)
+
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('lr', LogisticRegression())
+    ])
+
+    pipeline.fit(x_train,y_train)
+
+    param_grid = [{
+        'lr__penalty': ['l1', 'l2'],
+        'lr__C': np.logspace(-3, 2, num=10),
+        'lr__solver': ['liblinear', 'saga'],
+        'lr__class_weight': [None, 'balanced']
+    }]
+
+    grid_search = GridSearchCV(pipeline, param_grid, cv=10)
+    grid_search.fit(x_train,y_train)
+    #st.write(grid_search.best_params_)
+    best_params = {
+                    "C":0.01291549665014884,
+                    "class_weight":None,
+                    "penalty":"l2",
+                    "solver":"saga"
+                    }
     
-    lr_mod = LogisticRegression()
-    lr_mod = scale_fit(lr_mod,standard_scaler,x_train,y_train)
+    pipeline = Pipeline([
+        ('Scaler',StandardScaler()),
+        ("LR",LogisticRegression(**best_params))
+    ])
+    pipeline.fit(x_train,y_train)
     
-    if lr_mod.predict(df) == 1:
+    
+    if pipeline.predict(df) == 1:
         st.write('Congratulations, you would have survived!')
         st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/happy_sailor.jpg',use_column_width=True)
     else:
