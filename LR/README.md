@@ -10,3 +10,6 @@ The specific variables I looked at are contained in the table below:
 
 ### Data Transformation
 
+The outcome variable (SalePrice) was right skewed, so I used a log transformation to correct that. This affects the interpretation of my model, but allows the assumptions of linear regression to be satisfied.
+
+![SalePrice Histogram](https://github.com/lwilsen/IEX_Training/blob/main/LR/Images/Screenshot%202024-04-23%20at%208.35.41%E2%80%AFAM.png)
