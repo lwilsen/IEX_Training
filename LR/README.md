@@ -6,4 +6,4 @@ The goal of this project was to use data from the assessor's office of Ames Iowa
 
 The specific variables I looked at are contained in the table below:
 
-![Column key](/LR/Images/Screenshot 2024-04-23 at 8.20.55 AM.png)
+![Column key](https://github.com/lwilsen/IEX_Training/blob/main/LR/Images/Screenshot%202024-04-23%20at%208.20.55%E2%80%AFAM.png)
