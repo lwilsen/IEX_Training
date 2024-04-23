@@ -13,3 +13,9 @@ The specific variables I looked at are contained in the table below:
 The outcome variable (SalePrice) was right skewed, so I used a log transformation to correct that. This affects the interpretation of my model, but allows the assumptions of linear regression to be satisfied.
 
 ![SalePrice Histogram](https://github.com/lwilsen/IEX_Training/blob/main/LR/Images/Screenshot%202024-04-23%20at%208.35.41%E2%80%AFAM.png)
+
+### Validation Curve
+
+I also explored the use of validation curves to test hyperparameter choices, specifically the alpha parameter of the sklearn ridge regression model. The alpha parameter corresponds to the regularization constant of the model.
+
+![Alpha test](https://github.com/lwilsen/IEX_Training/blob/main/LR/Images/Screenshot%202024-04-23%20at%208.22.23%E2%80%AFAM.png)
