@@ -14,4 +14,6 @@ Below is a table of which variables I used to train my models, and a description
 
 I also wanted to highlight my use of Learning Curves and ROC graphs to evaluate the accuracy of my model, while also looking at different metrics like specificity and sensitivity.
 
+![Learning Curve](https://github.com/lwilsen/IEX_Training/blob/main/Titanic/Images/Screenshot%202024-04-23%20at%208.48.06%E2%80%AFAM.png)
 
+![Validation Curve](https://github.com/lwilsen/IEX_Training/blob/main/Titanic/Images/Screenshot%202024-04-23%20at%208.48.19%E2%80%AFAM.png)
