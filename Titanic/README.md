@@ -10,6 +10,12 @@ Below is a table of which variables I used to train my models, and a description
 
 ![Column Descriptions](https://github.com/lwilsen/IEX_Training/blob/main/Titanic/Images/Screenshot%202024-04-23%20at%208.46.46%E2%80%AFAM.png)
 
+### Models
+
+I used a couple of different models, and after hyper parameter tuning, I got the following models and associated scores.
+
+![Models and scores](https://github.com/lwilsen/IEX_Training/blob/main/Titanic/Images/Screenshot%202024-05-01%20at%203.28.13%E2%80%AFPM.png)
+
 ### Model Evaluation Methods
 
 I also wanted to highlight my use of Learning Curves and ROC graphs to evaluate the accuracy of my model, while also looking at different metrics like specificity and sensitivity.
