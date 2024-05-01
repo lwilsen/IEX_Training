@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split, validation_curve
 import numpy as np
 import plotly.express as px
 from plotly.subplots import make_subplots
-from sklearn.pipeline import Pipeline
+from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.linear_model import Ridge, LinearRegression
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt

@@ -261,51 +261,7 @@ def models():
     ax.legend()
     st.pyplot(fig)
 
-    st.write("#### Logistic Regression Learning Curve")
 
-    pipe_lr = make_pipeline(MinMaxScaler(), LogisticRegression())
-    train_sizes, train_scores, test_scores =\
-                learning_curve(estimator=pipe_lr,
-                               X=x_train,
-                               y=y_train,
-                               train_sizes=np.linspace(0.1, 1.0, 10),
-                               cv=10,
-                               n_jobs=1)
-    
-    train_mean = np.mean(train_scores, axis=1)
-    train_std = np.std(train_scores, axis=1)
-    test_mean = np.mean(test_scores, axis=1)
-    test_std = np.std(test_scores, axis=1)
-
-    fig, ax = plt.subplots()
-
-    # Plot the learning curves
-    ax.plot(train_sizes, train_mean,
-            color='blue', marker='o',
-            markersize=5, label='Training accuracy')
-    ax.fill_between(train_sizes,
-                    train_mean + train_std,
-                    train_mean - train_std,
-                    alpha=0.15, color='blue')
-
-    ax.plot(train_sizes, test_mean,
-            color='green', linestyle='--',
-            marker='s', markersize=5,
-            label='Validation accuracy')
-    ax.fill_between(train_sizes,
-                    test_mean + test_std,
-                    test_mean - test_std,
-                    alpha=0.15, color='green')
-
-    ax.grid()
-    ax.set_xlabel('Number of training examples')
-    ax.set_ylabel('Accuracy')
-    ax.legend(loc='lower right')
-    ax.set_ylim([0, 1.03])
-    plt.tight_layout()
-
-    # Display the plot using Streamlit
-    st.pyplot(fig)
 
     st.write("#### LogisticRegression ROC Curve (95.9%)")
 
@@ -371,10 +327,86 @@ def models():
     ax.set_ylabel("Precision")
     ax.set_title("Precision - Recall Curve")
     st.pyplot(fig)
+    st.write('#### SVM with Linear Kernel Learning Curve')
+    pipeline = make_pipeline(standard_scaler,svm_mod)
 
+    train_sizes, train_scores, test_scores = learning_curve(
+        pipeline, x_train, y_train, cv=10, n_jobs=3, train_sizes=np.linspace(0.1, 1.0, 10))
 
+    train_mean = np.mean(train_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
 
+    fig, ax = plt.subplots()
+    ax.plot(train_sizes, train_mean, label='Training score')
+    ax.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.1)
+    ax.plot(train_sizes, test_mean, label='Cross-validation score')
+    ax.fill_between(train_sizes, test_mean - test_std, test_mean + test_std, alpha=0.1)
+
+    ax.set_title("Learning Curve")
+    ax.set_xlabel("Training examples")
+    ax.set_ylabel("Score")
+    ax.legend()
+
+    st.pyplot(fig)
+
+    st.write('#### SVC with RBF Kernel Learning Curve')
+    pipeline = make_pipeline(standard_scaler,SVC(kernel = "rbf", C = 1, random_state = 1, gamma = 0.1))
+
+    train_sizes, train_scores, test_scores = learning_curve(
+        pipeline, x_train, y_train, cv=10, n_jobs=3, train_sizes=np.linspace(0.1, 1.0, 10))
+
+    train_mean = np.mean(train_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
+
+    fig, ax = plt.subplots()
+    ax.plot(train_sizes, train_mean, label='Training score')
+    ax.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.1)
+    ax.plot(train_sizes, test_mean, label='Cross-validation score')
+    ax.fill_between(train_sizes, test_mean - test_std, test_mean + test_std, alpha=0.1)
+
+    ax.set_title("Learning Curve")
+    ax.set_xlabel("Training examples")
+    ax.set_ylabel("Score")
+    ax.legend()
+
+    st.pyplot(fig)
+
+    st.write("#### Logistic Regression Learning Curve")
+
+    pipe_lr = make_pipeline(MinMaxScaler(), LogisticRegression())
+    train_sizes, train_scores, test_scores =\
+                learning_curve(estimator=pipe_lr,
+                               X=x_train,
+                               y=y_train,
+                               train_sizes=np.linspace(0.1, 1.0, 10),
+                               cv=10,
+                               n_jobs=1)
     
+    train_mean = np.mean(train_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
+
+    fig, ax = plt.subplots()
+    ax.plot(train_sizes, train_mean, label='Training score')
+    ax.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.1)
+    ax.plot(train_sizes, test_mean, label='Cross-validation score')
+    ax.fill_between(train_sizes, test_mean - test_std, test_mean + test_std, alpha=0.1)
+
+    ax.set_title("Learning Curve")
+    ax.set_xlabel("Training examples")
+    ax.set_ylabel("Score")
+    ax.legend()
+    st.pyplot(fig)
+
+    st.write('#### DBSCAN clustering silhouette plot')
+    st.image('Images/Screenshot 2024-05-01 at 3.11.05 PM.png',use_column_width=True)
+
+
     return prediction #Do I need this?
 
 def prediction():
