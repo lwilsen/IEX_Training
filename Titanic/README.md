@@ -2,6 +2,13 @@
 
 The goal of this project was to predict the survival outcome of passengers on the titanic based on data from this Kaggle dataset: https://www.kaggle.com/c/titanic/data.
 ---
+
+## Streamlit App
+
+To run the Streamlit app:
+1. Copy this repository to your local device
+2. Run `streamlit run streamlit_titanic.py`
+
 ## Project Overview
 
 ### Variables Used
