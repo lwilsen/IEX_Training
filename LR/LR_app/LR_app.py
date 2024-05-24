@@ -14,7 +14,7 @@ st.write("""
 # Housing Price Linear Regression Project
 Author: Luke Wilsen
 
-This was data came from the assessor's office of Ames Iowa, and contains information used to computing 
+This data came from the assessor's office of Ames Iowa, and contains information used to computing 
         assessed values for individual residential properties sold in ames, IA from 2006 to 2010.
     """)     
 st.write("""---""")

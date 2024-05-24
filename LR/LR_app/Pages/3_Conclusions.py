@@ -75,8 +75,6 @@ def reg_mod(model, X_train = Xl_train,X_test = Xl_test,y_train = yl_train,y_test
 
     mod_stats[model_key] = {"rmse":rmse_test.round(),"mae":mae_test.round(),"r2":r2_test.round(3)}
 
-    
-
     mod_dict = {'coefficients':model.coef_,
                 'intercept':model.intercept_}
     
@@ -99,7 +97,9 @@ st.write("""
 ### Interpretation of coefficients
 - Because the model used data that was log transformed, the table above contains all the coefficients raised to the power e
 - We can see that the most important predictors are:
-    - Overall Qual
-    - Exter Qual
     - Central Air
+    - Exter Qual
+    - Overall Qual
+- Here, an increase by 1 in any of the parameters causes an increase by  $ ___ hundred thousand dollars in saleprice.
+    - Ex. According to the model, an increase in central air corresponds to an increase in price by 0.243 hundred thousand dollars ($24,300).
 """)

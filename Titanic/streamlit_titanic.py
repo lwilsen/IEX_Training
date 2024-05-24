@@ -98,7 +98,12 @@ def home():
     ## Project Overview
     
     This project is an exploration of the Titanic kaggle dataset and my attempt to model the survival outcome based on certain variables in the dataset.
+             
+    ### Navigating this App
+             
+    Use the tabs in the sidebar to the left to navigate to the other pages of this app!
             """)
+    
 
 
 
@@ -290,7 +295,7 @@ def models():
     ax.set_title("Receiver Operating Characteristic (ROC) Curve")
     ax.legend()
     st.pyplot(fig)
-
+    PR_curves = """
     st.write('#### SVC with Linear Kernel PR Curve (100%)')
 
     fig, ax = plt.subplots(figsize = (12,8))
@@ -327,6 +332,7 @@ def models():
     ax.set_ylabel("Precision")
     ax.set_title("Precision - Recall Curve")
     st.pyplot(fig)
+    """
     st.write('#### SVM with Linear Kernel Learning Curve')
     pipeline = make_pipeline(standard_scaler,svm_mod)
 
@@ -475,10 +481,10 @@ def prediction():
     
     if pipeline.predict(df) == 1:
         st.write('Congratulations, you would have survived!')
-        st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/happy_sailor.jpg',use_column_width=True)
+        st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/happy_sailor.jpg',use_column_width=False)
     else:
         st.write('Uh Oh.')
-        st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/you_died.png', use_column_width= True)
+        st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/you_died.png', use_column_width= False)
 
 
 
