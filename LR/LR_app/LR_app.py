@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import Lasso
