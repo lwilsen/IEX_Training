@@ -10,3 +10,5 @@ Example Below:
 
 ![Example of code entry](Pictures/Screenshot%202024-06-17%20at%202.21.28%E2%80%AFPM.png)
 ![Example of response](Pictures/Screenshot%202024-06-17%20at%202.21.41%E2%80%AFPM.png)
+
+This streamlit app was made using the command-r-plus Cohere Model (https://docs.cohere.com/docs/models)
