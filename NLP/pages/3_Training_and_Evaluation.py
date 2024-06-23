@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 st.header('Model Training and Evaluation')
 st.write('---')
@@ -16,3 +17,5 @@ st.write('''The previous model took a very long time to run, mostly due to the g
          one solution to this is to incrementally fit the classifier to smaller batches of the dataset. This method
          uses stochastic gradient descent to incrementally optimize the loss function we choose (log loss in this case).
          **The accuracy for this model was 86.6% on the test data.**''')
+
+df = pd.read_csv('movie_data.csv', encoding='utf-8')
