@@ -15,7 +15,7 @@ the murder murder in greenwich is a good tv movie with the true story of a murde
 title brazil not available
 '''
 
-st.text_area('Cleaned Review Exampl',text,height=300)
+st.text_area('Cleaned Review Example',text,height=300)
 st.write('''Notice how all of the characters were converted to lowercase, all punctuation was removed,
          and all of the html markdown was removed.''')
 
