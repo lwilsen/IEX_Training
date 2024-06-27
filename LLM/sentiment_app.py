@@ -18,7 +18,8 @@ def analyze_code(text):
         model = "command-r-plus",
         message= prompt
     )
-    st.write(response.text)
+    
+    st.write(type(response.text))
 
 if __name__ == "__main__":
     main()

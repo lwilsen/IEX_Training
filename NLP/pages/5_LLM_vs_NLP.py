@@ -8,10 +8,39 @@ reviews = ['In 1974, the teenager Martha Moxley (Maggie Grace) moves to the high
  'hi for all the people who have seen this wonderful movie im sure thet you would have liked it as much as i. i love the songs once you have seen the show you can sing along as though you are part of the show singing and dancing . dancing and singing. the song ONE is an all time fave musical song too and the strutters at the end with the mirror its so oh you have to watch this one',
  'I recently bought the DVD, forgetting just how much I hated the movie version of "A Chorus Line." Every change the director Attenborough made to the story failed.<br /><br />By making the Director-Cassie relationship so prominent, the entire ensemble-premise of the musical sails out the window.<br /><br />Some of the musical numbers are sped up and rushed. The show\'s hit song gets the entire meaning shattered when it is given to Cassie\'s character.<br /><br />The overall staging is very self-conscious.<br /><br />The only reason I give it a 2, is because a few of the great numbers are still able to be enjoyed despite the film\'s attempt to squeeze every bit of joy and spontaneity out of it.']
 
+llm_responses = ['''the sentiment of the text is mostly positive. the writer seems to have enjoyed the movie, praising its portrayal of a true story and the investigation process. while they do mention a lack of emotion in the dramatization, they still give the film a solid rating of seven, indicating they found it to be decent overall.''',
+                 '''the sentiment of the text is negative. the writer expresses disappointment and frustration with the movie "disappearance" and its confusing storyline. they criticize the lack of a coherent plot and consider it a waste of time and talent. the text also includes strong negative words and exclamations that indicate the writer's displeasure with the movie.''',
+                 '''the sentiment of the text is negative. the writer expresses disappointment and criticism towards the movie "coyote ugly," describing it as a waste of time, with a predictable plot, shallow characters, and failed attempts at depth. the acting and script are also criticized, and the overall recommendation is to avoid watching it.''',
+                 '''the sentiment of the text is positive. the writer expresses their enjoyment of the movie, particularly its songs and interactive nature, and recommends it to others.''',
+                 '''the sentiment of the text is negative. the writer expresses disappointment and frustration with the film adaptation of "a chorus line," criticizing the director's changes to the story, the rushed musical numbers, and the self-conscious staging. while the writer mentions a few enjoyable elements, the overall tone of the review is negative.]''']
+
 st.write('''
 5 Examples:
 ''')
 
 for i in range(len(reviews)):
     st.text_area(f"Review {i + 1}", reviews[i], height=100)
+
+st.write(f'''
+| Review | Model Prediction | LLama (LLM) Prediction | Actual Value |
+|---|---|---|---|
+| 1 | Positive | "mostly positive" | 1 (positive) |
+| 2 | Negative | "negative" | 0 (negative) |
+| 3 | Negative | "negative" | 0 (negative) |
+| 4 | Positive | "positive" | 1 (positive) |
+| 5 | Negative | "negative" | 0 (negative) |
+---
+As you can see, both the NLP and LLM models correctly predicted all 5 examples correctly. However, their accuracy decreased when applied to larger batches of data.''')
+
+st.write('''
+| Model | #N Samples | Accuracy |
+|---|---|---|
+| **LLM** | 200 | 0.775 |
+| **NLP** | 200 | 0.717 |
+| **LLM** | 1000 | 0.855 |
+| **NLP** | 1000 | 0.793 |
+''')
+
+
+
 
