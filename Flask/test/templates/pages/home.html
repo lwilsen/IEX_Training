@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Splashpage!{% endblock title %}</h2>
+{% endblock header %}
+
+{% block content %}
+  <p>
+    Splash! Welcome to my final project!<br><br>
+    Learn more about this project by visiting the <a href="{{ url_for('pages.about') }}">About page</a>.
+  </p>
+{% endblock content %}
