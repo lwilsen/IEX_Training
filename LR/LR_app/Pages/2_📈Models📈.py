@@ -92,7 +92,7 @@ def reg_mod(model, X_train = X_train,X_test = X_test,y_train = y_train,y_test = 
 
     model_key = f"{model.__class__.__name__}"
 
-    mod_stats[model_key] = {"rmse":rmse_test.round(),"mae":mae_test.round(),"r2":r2_test.round(3)}
+    mod_stats[model_key] = {"rmse":rmse_test,"mae":mae_test,"r2":r2_test}
 
     return
 
