@@ -24,3 +24,4 @@ def prediction():
         svc_pipeline = pickle.load(open("test/Model/svc_pipeline.pkl", 'rb'))
         prediction = np.array2string(svc_pipeline.predict(data))
         return jsonify(prediction)
+    
