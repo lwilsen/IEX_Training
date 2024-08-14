@@ -1,5 +1,5 @@
 from flask import Flask
-
+from flask_cors import CORS #figure out how to get app to work with CORS
 from test import pages
 
 import pickle as p

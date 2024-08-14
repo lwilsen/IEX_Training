@@ -16,7 +16,7 @@ def home():
 def about():
     return render_template("about.html")
 
-@bp.route("/prediction", methods = ['GET','POST']) #need the get method to allow the render_template to work
+@bp.route("/prediction", methods = ['GET','POST'])
 def prediction():
     if request.method == 'GET':
         return render_template("prediction.html")
