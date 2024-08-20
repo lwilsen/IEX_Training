@@ -7,9 +7,8 @@ from sklearn.linear_model import LogisticRegression
 from nltk.stem.porter import PorterStemmer
 
 
-#regression model creation
-from log_transformer import LogTransformer
-from tokenizer_porter import tokenizer_porter
+#Housing regression model creation
+from final_project.Flask.utils import LogTransformer
     
 ridge_pipeline = Pipeline([
     ('log_transformer', LogTransformer(add_constant=1)),
@@ -18,6 +17,7 @@ ridge_pipeline = Pipeline([
 
 with open('ridge_pipe.pkl', 'wb') as f:
     pickle.dump(ridge_pipeline, f)
+
 
 # NLP Models n stuff
 porter = PorterStemmer()

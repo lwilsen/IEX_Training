@@ -59,8 +59,8 @@ def reg_mod(model, X_train = X_train,X_test = X_test,y_train = y_train,y_test = 
     fig.add_trace(px.scatter(x=y_train_pred, y=y_train_pred - y_train, color_discrete_sequence=['steelblue'], opacity=0.5).data[0], row=1, col=2)
 
 
-    fig.add_hline(y=0, line_dash='dash', line_color='white', line_width=1, row=1, col=1)
-    fig.add_hline(y=0, line_dash='dash', line_color='white', line_width=1, row=1, col=2)
+    fig.add_hline(y=0, line_dash='dash', line_color='black', line_width=1, row=1, col=1)
+    fig.add_hline(y=0, line_dash='dash', line_color='black', line_width=1, row=1, col=2)
 
 
     # Update layout
@@ -74,8 +74,8 @@ def reg_mod(model, X_train = X_train,X_test = X_test,y_train = y_train,y_test = 
     )
 
     # Update subplots
-    fig.update_xaxes(showline=True, linewidth=2, linecolor='black', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=2, linecolor='black', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='black', mirror=False)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='black', mirror=False)
 
     # Show the plot using Streamlit
     st.write(model.__class__.__name__)
@@ -101,6 +101,8 @@ with open('slr_mod.pkl', 'rb') as f:
 
 with open('ridge_mod.pkl', 'rb') as f:
     ridge = pickle.load(f)
+
+st.write(ridge.get_params())
 
 with open('lasso_mod.pkl', 'rb') as f:
     lasso = pickle.load(f)
@@ -134,15 +136,15 @@ st.dataframe(df,height = 200,width=700)
 
 pipeline = Pipeline([
     ('standardscaler', StandardScaler()),
-    ('ridge', Ridge())
+    ('ridge', ridge)
 ])
 scoring = make_scorer(mean_absolute_error, greater_is_better=True)
 
-param_range = np.arange(0,10.1,0.1)
+param_range = np.arange(0,50,0.5)
 train_scores, test_scores = validation_curve(
                 estimator=pipeline, 
-                X=X_train, 
-                y=y_train, 
+                X=Xl_train, 
+                y=yl_train, 
                 param_name='ridge__alpha', 
                 param_range=param_range,
                 cv=5,
@@ -175,10 +177,9 @@ ax.fill_between(param_range,
                  alpha=0.15, color='green')
 
 ax.grid()
-ax.legend(loc='center right')
+ax.legend(loc='upper right')
 ax.set_xlabel('Parameter Alpha')
 ax.set_ylabel('Mean Absolute Error')
-ax.set_ylim([24530, 24730])
 fig.tight_layout()
 
 # Display the plot using Streamlit

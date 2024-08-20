@@ -1,4 +1,5 @@
 from sklearn.base import BaseEstimator, TransformerMixin
+import numpy as np
 
 class LogTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, add_constant=0.0):

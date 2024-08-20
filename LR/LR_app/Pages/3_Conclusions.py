@@ -94,7 +94,9 @@ with open('slr_mod.pkl', 'rb') as f:
 reg_mod(slr, X_train = Xl_train,X_test = Xl_test,y_train = yl_train,y_test = yl_test)
 
 st.write("""
-### Interpretation of coefficients
+### Interpretation of coefficients""")
+st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/LR_coefficient_estimates.png", use_column_width=True)
+st.write("""
 - Because the model used data that was log transformed, the table above contains all the coefficients raised to the power e
 - We can see that the most important predictors are:
     - Central Air

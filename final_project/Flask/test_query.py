@@ -5,8 +5,8 @@ url = "http://localhost:8000/query"
 
 query = '''SELECT * FROM titanic LIMIT 5;'''
 
-j_query = json.dumps(query)
+#j_query = json.dumps(query)
 
-r = requests.post(url, query = query)
+response = requests.post(url, json = {'query':query})
 
-print(r, r.text)
+print(response, response.text)
