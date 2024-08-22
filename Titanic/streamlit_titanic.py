@@ -165,6 +165,7 @@ def exploration(y_train = y_train, x_train = x_train, train = train):
     ax.set_title('Histogram of Fare')
     st.pyplot(fig)
     fig = px.violin(train, x = 'Survived', y = 'Fare')
+    fig.update_traces(meanline_visible = True)
     st.plotly_chart(fig)
     st.write('- Clear that higher fares **usually** increased probability of survival')
 

@@ -1,9 +1,10 @@
 import streamlit as st
-from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 import numpy as np
 import pandas as pd
 import requests
+import cv2
+import matplotlib.pyplot as plt
 
 if st.sidebar.button("Reset Page"):
     st.markdown(
@@ -21,6 +22,13 @@ st.header("Interactive Predictions!")
 table_option = st.radio("Select Dataset:", ("Titanic",'Housing','Movie', 'MNIST'))
 
 st.divider()
+
+def image_show(image):
+    plt.figure()
+    plt.imshow(image, cmap = 'gray_r')
+    plt.colorbar()
+    plt.grid(False)
+    plt.show()
 
 if table_option == "Titanic":
     st.write("Would you have survived on the titanic?")
@@ -55,7 +63,7 @@ if table_option == "Titanic":
     st.write(user_input_features_df)
 
     if st.button("Predict"):
-        response = requests.post("http://localhost:8000/predict_titanic", json = user_input_features_df.to_dict(orient='records')[0])
+        response = requests.post("http://flask_route:5001/predict_titanic", json = user_input_features_df.to_dict(orient='records')[0])
         result = response.json()
         result_df = pd.DataFrame([result])
         #survival_prob = result_df['Survival_prob'][0]
@@ -78,7 +86,7 @@ elif table_option == "Housing":
     exter_qual = st.selectbox('Exterior Quality:', options=['Poor', 'Fair', 'Good', 'Very Good'])
     total_bsmt_sf = st.slider('Total Basement SF (sq. ft.):', 0, 3000, 1000)
     central_air = st.selectbox('Central Air Conditioning:', options=['Yes', 'No'])
-    gr_liv_area = st.slider('Above Grade Living Area (sq. ft):', 0, 5000, 1500)
+    gr_liv_area = st.slider('Above Grade Living Area (sq. ft):', 0, 5001, 1500)
     fireplaces = st.number_input('Number of Fireplaces:', min_value=0, max_value=5, value=2)
     
     
@@ -105,7 +113,7 @@ elif table_option == "Housing":
     }).to_dict(orient='records')[0]
 
     if st.button("Predict"):
-        response = requests.post("http://localhost:8000/predict_housing", json = user_input)
+        response = requests.post("http://flask_route:5001/predict_housing", json = user_input)
         result = response.json()
         result_df = pd.DataFrame([result])
         st.write("Predicted Sale Price")
@@ -122,10 +130,43 @@ elif table_option == "Movie":
     text = "This sentiment is negative, as an example."
     text = st.text_area("Enter a sentence for sentiment testing:", value=text)
     if st.button('Predict'):
-        response = requests.post("http://localhost:8000/predict_sentiment", json = {'text':text})
-        st.write(response.status_code)
-        st.write(response.text)
-        result = response
-        #sentiment = result['sentiment']
-        st.write(result)
+        response = requests.post("http://flask_route:5001/predict_sentiment", json = {'text':text})
+        result = response.json()
+        sentiment = result['sentiment']
+        if sentiment == 'Positive':
+            st.success("The sentiment is Positive!")
+        elif sentiment == 'Negative':
+            st.error("The sentiment is Negative!")
 
+elif table_option == "MNIST":
+    st.write("Handwritten Digit Prediction!")
+    canvas_result = st_canvas(
+        fill_color='rgba(1,0,0,0.3)',
+        stroke_width=10,
+        stroke_color='#ffffff',
+        background_color='#000000',
+        update_streamlit=True,
+        height=150,
+        width=150,
+        drawing_mode="freedraw",
+        key='canvas'
+    )
+    if st.button("Predict"):
+        if canvas_result.image_data is not None:
+            #input_array = np.array(canvas_result.image_data)
+            input_image = cv2.cvtColor(canvas_result.image_data, cv2.COLOR_RGBA2BGR)
+
+            gray_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
+
+            processed_img = cv2.resize(gray_image, (28,28), interpolation=cv2.INTER_AREA)
+            st.pyplot(image_show(processed_img))
+
+            cv2.imwrite('processed_img.png',processed_img)
+
+            image_data = np.array(processed_img).tolist()
+            response = requests.post("http://flask_route:5001/predict_mnist", json={"image_data":image_data})
+            result = response.json()
+            predicted_digit = result['digit']
+            weights = result['weights']
+            st.write(f"Predicted Digit: {predicted_digit}")
+            st.write(f"Entire Prediction: {weights}")

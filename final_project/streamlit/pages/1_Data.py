@@ -251,7 +251,7 @@ elif data_option == "MNIST":
 query = st.text_area(label = '**Enter your SQL query here:**', value = query)
 
 if st.button("Submit"):
-    response = requests.post("http://localhost:8000/query", json = {"query":query})
+    response = requests.post("http://flask_route:5001/query", json = {"query":query})
     if response.status_code == 200:
         try:
             result = response.json()

@@ -1,6 +1,5 @@
 import sqlite3
 import pandas as pd
-import tensorflow as tf
 
 titanic_df = pd.read_csv('Data_files/titanic_train.csv')
 columns = ['Overall Qual', 'Overall Cond', 'Gr Liv Area',

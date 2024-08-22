@@ -9,15 +9,9 @@ from nltk.stem import WordNetLemmatizer, PorterStemmer
 import nltk
 import sqlite3
 import pandas as pd
-import xgboost as xgb
-from sklearn.base import BaseEstimator, TransformerMixin
-import re
 from sklearn.linear_model import Ridge
-from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-
+from utils import tokenizer_porter
 
 app = Flask(__name__)
 CORS(app)
@@ -30,7 +24,7 @@ def home():
 
 def query_database(query):
     try:
-        conn = sqlite3.connect('/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/Database/final_project.db')
+        conn = sqlite3.connect('app/Database/final_project.db')
         cursor = conn.cursor()
         cursor.execute(query)
         columns = [description[0] for description in cursor.description]
@@ -73,15 +67,11 @@ porter = PorterStemmer()
 def tokenizer_porter(text):
     return [porter.stem(word) for word in text.split()]
 
-### NLP
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('wordnet')
-nltk.download('stopwords')
 
 #NLP model is the lr_tfidf
 #nlp_model = pickle.load(open('Models/nlp_model.pkl','rb'))
-nlp_vect = pickle.load(open('Models/nlp_vect.pkl','rb'))
+#nlp_vect = pickle.load(open('Models/nlp_vect.pkl','rb'))
+nlp_mod = pickle.load(open('Models/nlp_model.pkl','rb'))
 
 
 def get_wordnet_pos(treebank_tag):
@@ -97,18 +87,23 @@ def get_wordnet_pos(treebank_tag):
         return wordnet.NOUN
 
 
-import re
-def preprocessor(text):
-    text = re.sub('<[^>]*>',"",text)
-    emoticons = re.findall('(?::|;|=)(?:-)?(?:\)|\(|D|P)', text)
-    text = (re.sub('[\W]+', ' ', text.lower()) + ' '.join(emoticons).replace('-', ''))
-    
-    return text
+def preprocess_text(text):
+    tokens = word_tokenize(text)
+    pos_tags = nltk.pos_tag(tokens)
+    lemmatizer = WordNetLemmatizer()
+    stemmer = PorterStemmer()
+    processed_tokens = []
+    for word, tag in pos_tags:
+        lemmatized_word = lemmatizer.lemmatize(word, get_wordnet_pos(tag))
+        stemmed_word = stemmer.stem(lemmatized_word)
+        processed_tokens.append(stemmed_word)
+    return ' '.join(processed_tokens)
 
-text_clf = Pipeline([('vect', nlp_vect),
+"""text_clf = Pipeline([('vect', nlp_vect),
                      ('clf', LogisticRegression(solver='liblinear')),])
 best_params = {'clf__C': 10.0, 'clf__penalty': 'l2', 'vect__ngram_range': (1, 1), 'vect__stop_words': None, 'vect__tokenizer': tokenizer_porter}
-text_clf.set_params(**best_params)
+"""
+nlp_mod.set_params(vect__tokenizer = tokenizer_porter)
 
 ### MNIST model
 
@@ -148,15 +143,22 @@ def predict_housing():
 
 @app.route('/predict_sentiment', methods = ["POST"])
 def predict_sentiment():
-    text = request.json.get('text','')
-    text_array = [text]
-    pred = text_clf.predict(text_array)
-    #sentiment = 'Negative' if pred[0] == 0 else "Positive"
-    return {"pred":pred, "mod_stats":text_clf.get_params()}
+    data = request.json
+    text = data.get('text', '')
+    processed_text = preprocess_text(text)
+    array = np.array([processed_text])
+    pred = nlp_mod.predict(array)
+    sentiment = 'Positive' if pred[0] == 1 else 'Negative'
+    return jsonify({'sentiment': sentiment})
 
-
-
+@app.route('/predict_mnist', methods = ["POST"])
+def predict_mnist():
+    data = request.json.get('image_data')
+    processed_img = np.array(data).reshape(1, 28, 28, 1) / 255.0
+    prediction = mnist_model.predict(processed_img)
+    predicted_digit = np.argmax(prediction)
+    return jsonify({'digit' : predicted_digit.tolist(), 'weights': prediction.tolist()})
 
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', debug = True)
+    app.run(host = '0.0.0.0', port = 5001)
