@@ -4,7 +4,10 @@ import pandas as pd
 import re
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+import nltk
 
+nltk.download('punkt_tab')
+nltk.download('stopwords')
 st.title("Data Exploration")
 
 if st.sidebar.button("Reset Page"):
@@ -27,7 +30,7 @@ def housing(df):
             assessed values for individual residential properties sold in ames, IA from 2006 to 2010.
         """)     
     st.write("""---""")
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/LR/LR_app/Ames_Iowa.jpg",caption="Ames Iowa", use_column_width=True)
+    st.image("/app/pictures/Ames_Iowa.jpg",caption="Ames Iowa", use_column_width=True)
     st.write("""        
     I chose to look at a subsection of the entire dataset, selecting only the following columns:
     """)
@@ -51,23 +54,23 @@ def housing(df):
     st.dataframe(df)
     st.divider()
     st.write("When I was exploring the data, I found that our outcome variable, *saleprice* was very skewed. This isn't good because a linear model technically requires non-skewed data to work properly!")
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/Housing_Normalization.png", caption="Normalization", use_column_width=True)
+    st.image("/app/pictures/Housing_Normalization.png", caption="Normalization", use_column_width=True)
     st.write("""
 - You can see below that when the data isn't normalized the errors aren't **random**
     - This means your predictions are going to be wrong in a predictable way, and we can find and eliminate that pattern of error""")
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/Non_Normal_Residuals.png", use_column_width=True)
+    st.image("/app/pictures/Non_Normal_Residuals.png", use_column_width=True)
     st.write('''
 - However, after normalization (below), the errors are more random (I promise this is a good thing)
     - It means that we've extracted all of the patterns (predictability) out of the data we can!''')
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/Normalized_residuals.png", use_column_width=True)
+    st.image("/app/pictures/Normalized_residuals.png", use_column_width=True)
     st.divider()
     st.write("""I also tried to change different parameters of my best model, to see if I could fine tune it further, with limited success""")
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/LR_val_curve.png", use_column_width=True)
+    st.image("/app/pictures/LR_val_curve.png", use_column_width=True)
     st.write("""
 - You can see a slight slope in both lines (indicating better performance), but not by a practically significant amount""")
     st.divider()
     st.subheader("Conclusions")
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/LR_coefficient_estimates.png", use_column_width=True)
+    st.image("/app/pictures/LR_coefficient_estimates.png", use_column_width=True)
     st.write("""
     - Because the model used data that was log transformed, the table above contains all the coefficients raised to the power e
     - We can see that the most important predictors are:
@@ -102,17 +105,17 @@ def titanic(df):
     st.divider()
     st.subheader("Data Exploration")
     st.write("I wanted to visually explore the relationship between the different variables, so I used a heatmap")
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/Titanic_heatmap.png", use_column_width=True)
+    st.image("/app/pictures/Titanic_heatmap.png", use_column_width=True)
     st.write("- From the heatmap *survived* row, you can see that being **male** had a negative impact on survival, and that the **fare** you paid and the **class** you were in had either a negative or positive impact")
     st.write("""I also divided the passengers into male and female to look at the differences in survival""")
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/Titanic_pass_breakdown_sex.png", use_column_width=True)
+    st.image("/app/pictures/Titanic_pass_breakdown_sex.png", use_column_width=True)
     st.write("""
 - You can see from the above graphs, that though **most of the passengers were men, most of the survivors were female**
     - Therefore it's likely that being male negatively impacted your chances of survival
              
 I also wanted to look at the fare distrubution seperated by survival status
 """)
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/Titanic_violin.png", use_column_width=True)
+    st.image("/app/pictures/Titanic_violin.png", use_column_width=True)
     st.write("""
 - The mean (dotted) lines in the above plot show us that the average *fare* paid was higher for those who survived,
              than for those that died
@@ -121,7 +124,7 @@ I also wanted to look at the fare distrubution seperated by survival status
              which was higher up in the ship, also making survival more likely
 """)
     st.write("I also tried a non-linear clustering method to see if there were two distinct clusters in the data")
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/Titanic_DBSCAN.png", use_column_width=True)
+    st.image("/app/pictures/Titanic_DBSCAN.png", use_column_width=True)
     st.write("""
 - Visually, you can see that there are two majority groups and one very small minority group
     - My hypothesis about this is that the two majority groups are:
@@ -181,12 +184,12 @@ I used two models:
 - You can see that my best model was better at predicting positive sentiments than negative sentiments
     - There are more incorrect "True Negative" reviews, than incorrect "True Positive" reviews
 """)
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/NLP_Confusion.png",caption="Confusion Matrix of model predictions", use_column_width=True)
+    st.image("/app/pictures/NLP_Confusion.png",caption="Confusion Matrix of model predictions", use_column_width=True)
     return
 
 def mnist():
     st.write('**Examples of MNIST Handwritten Digits**')
-    st.image("/Users/lukewilsen/Desktop/IEX/IEX_Training/final_project/streamlit/pictures/MNIST_digits.png", caption="MNIST DIGITS", use_column_width=True)
+    st.image("/app/pictures/MNIST_digits.png", caption="MNIST DIGITS", use_column_width=True)
     st.header("Convolutional Neural Network Using *Tensorflow*")
     st.markdown("""
 I used a Convolutional Neural Network (CNN) to classify the images contained in the MNIST dataset, using both Pytorch and Tensorflow. Here is a brief explanation of each layer in the CNN model and its role in the classification process:
@@ -227,10 +230,10 @@ I used a Convolutional Neural Network (CNN) to classify the images contained in 
 
     st.write('---')
     st.write('Model Training and Validation')
-    st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Neural_Networks/screenshots/Screenshot 2024-05-29 at 7.53.46 PM.png', caption="Train and Validation Accuracy through Epoch Progression")
+    st.image('/app/pictures/Screenshot 2024-05-29 at 7.53.46 PM.png', caption="Train and Validation Accuracy through Epoch Progression")
 
     st.write('Graphs of model performance through epoch progression')
-    st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Neural_Networks/screenshots/Screenshot 2024-05-29 at 7.54.14 PM.png',caption='Model Performance')
+    st.image('/app/pictures/Screenshot 2024-05-29 at 7.54.14 PM.png',caption='Model Performance')
 
     return
 
@@ -255,8 +258,9 @@ if st.button("Submit"):
     if response.status_code == 200:
         try:
             result = response.json()
-            data = result["Data"]
-            columns = result["Columns"]
+            
+            data = result.get("Data", [])
+            columns = result.get("Columns", [])
             df = pd.DataFrame(data, columns=columns)
             if data_option == "Housing":
                 housing(df)

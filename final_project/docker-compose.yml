@@ -3,7 +3,7 @@ services:
     build:
       context: ./Database
       dockerfile: Dockerfile
-    container_name: full-database
+    container_name: full_database
     volumes:
       - ./Database/final_project.db:/app/final_project.db
 

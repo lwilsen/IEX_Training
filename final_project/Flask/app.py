@@ -13,6 +13,10 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import train_test_split
 from utils import tokenizer_porter
 
+nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
+nltk.download('wordnet')
+
 app = Flask(__name__)
 CORS(app)
 
@@ -23,17 +27,20 @@ def home():
 # Build Query tool (not including mnist for now)
 
 def query_database(query):
+    #conn = None  # This might be causing problems
     try:
-        conn = sqlite3.connect('app/Database/final_project.db')
+        conn = sqlite3.connect('/app/final_project.db')
         cursor = conn.cursor()
         cursor.execute(query)
         columns = [description[0] for description in cursor.description]
         data = cursor.fetchall()
-    except sqlite3.Error as e:
-        print(e)
-    finally:
         conn.close()
-    return {"Columns":columns, "Data":data}
+        return {"Columns": columns, "Data": data}
+    except sqlite3.Error as e:
+        return {"error": str(e)}
+    """finally:
+        if conn:
+            """
 
 # Prediction Functions/models
 

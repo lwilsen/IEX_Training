@@ -5,6 +5,9 @@ import pandas as pd
 import requests
 import cv2
 import matplotlib.pyplot as plt
+import nltk
+
+nltk.download('averaged_perceptron_tagger_eng')
 
 if st.sidebar.button("Reset Page"):
     st.markdown(
@@ -71,11 +74,11 @@ if table_option == "Titanic":
 
         if prediction == 1:
             st.success("You Survived!")
-            st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/happy_sailor.jpg',use_column_width=False)
+            st.image('/app/pictures/happy_sailor.jpg',use_column_width=False)
 
         else:
             st.error('Uh Oh.')
-            st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Titanic/you_died.png', use_column_width= False)
+            st.image('/app/pictures/you_died.png', use_column_width= False)
 
 elif table_option == "Housing":
     st.write("""Housing Exploration and Prediction Tool""")
@@ -159,7 +162,9 @@ elif table_option == "MNIST":
             gray_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
 
             processed_img = cv2.resize(gray_image, (28,28), interpolation=cv2.INTER_AREA)
-            st.pyplot(image_show(processed_img))
+
+            #fig = image_show(processed_img)
+            #st.pyplot(fig)
 
             cv2.imwrite('processed_img.png',processed_img)
 
