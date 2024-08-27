@@ -1,0 +1,25 @@
+#Git Ignore File
+
+.DS_Store
+
+.vscode/
+
+DOBBY_git_repo/
+
+Flask_module/
+
+IEX_gameon_response.docx
+
+MNIST/.DS_Store
+
+NLP/aclImdb/
+
+data.pkl
+
+dominos_locations_expanded_mock_data.xlsx
+
+Neural_Networks/.DS_Store
+
+NLP/.DS_Store
+
+final_project/.DS_Store
