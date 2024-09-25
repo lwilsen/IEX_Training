@@ -1,5 +1,6 @@
 import sqlite3
 
+
 def create_database(filename):
     """creates database connection to a SQlite database"""
 
@@ -12,6 +13,7 @@ def create_database(filename):
     finally:
         if conn:
             conn.close()
+
 
 if __name__ == "__main__":
     create_database("my.db")

@@ -1,10 +1,11 @@
 import streamlit as st
 
-st.write('---')
+st.write("---")
 
 st.title("MNIST Dataset Overview")
 
-st.markdown("""
+st.markdown(
+    """
 The MNIST dataset is one of the most famous datasets in the field of machine learning and computer vision. It stands for **Modified National Institute of Standards and Technology** database and contains a large collection of handwritten digits. Each image in the dataset is a 28x28 pixel grayscale image, depicting a single digit from 0 to 9.
 
 ### Key Features of the MNIST Dataset:
@@ -24,6 +25,5 @@ The MNIST dataset is one of the most famous datasets in the field of machine lea
 
 ### How It’s Used in this Streamlit App:
 In our Streamlit app, we leverage the MNIST dataset to demonstrate the process of building, training, and evaluating a neural network model. The app includes visualizations of the dataset, two different neural networks (one PyTorch model and one TensorFlow model), and displaying the performance metrics.
-""")
-
-
+"""
+)

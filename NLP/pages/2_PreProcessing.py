@@ -1,25 +1,29 @@
 import streamlit as st
 
-st.header('PreProcessing')
-st.write('---')
-st.write('''The original text from the movie reviews still contains HTML markup, and hasn't been turned
+st.header("PreProcessing")
+st.write("---")
+st.write(
+    """The original text from the movie reviews still contains HTML markup, and hasn't been turned
          into "machine friendly" text yet through tokenization, so we need to process the reviews to be
          able to use them. We'll use a simple regex function to remove the HTML, process the text
          into tokens using the porter stemmer algorithmn, and then remove stop words (common words that don't
-         provide much meaningful information such as like, and, is ... etc.)''')
+         provide much meaningful information such as like, and, is ... etc.)"""
+)
 
-text = '''in 1974 the teenager martha moxley maggie grace moves to the high class area of belle haven greenwich connecticut on the mischief night eve of halloween she was murdered in the backyard of her house and her murder remained unsolved twenty two years later the writer mark fuhrman christopher meloni who is a former la detective that has fallen in disgrace for perjury in o j simpson trial and moved to idaho decides to investigate the case with his partner stephen weeks andrew mitchell with the purpose of writing a book the locals squirm and do not welcome them but with the support of the retired detective steve carroll robert forster that was in charge of the investigation in the 70 s they discover the criminal and a net of power and money to cover 
+text = """in 1974 the teenager martha moxley maggie grace moves to the high class area of belle haven greenwich connecticut on the mischief night eve of halloween she was murdered in the backyard of her house and her murder remained unsolved twenty two years later the writer mark fuhrman christopher meloni who is a former la detective that has fallen in disgrace for perjury in o j simpson trial and moved to idaho decides to investigate the case with his partner stephen weeks andrew mitchell with the purpose of writing a book the locals squirm and do not welcome them but with the support of the retired detective steve carroll robert forster that was in charge of the investigation in the 70 s they discover the criminal and a net of power and money to cover 
 
 the murder murder in greenwich is a good tv movie with the true story of a murder of a fifteen years old girl that was committed by a wealthy teenager whose mother was a kennedy the powerful and rich family used their influence to cover the murder for more than twenty years however a snoopy detective and convicted perjurer in disgrace was able to disclose how the hideous crime was committed the screenplay shows the investigation of mark and the last days of martha in parallel but there is a lack of the emotion in the dramatization my vote is seven 
 
 title brazil not available
-'''
+"""
 
-st.text_area('Cleaned Review Example',text,height=300)
-st.write('''Notice how all of the characters were converted to lowercase, all punctuation was removed,
-         and all of the html markdown was removed.''')
+st.text_area("Cleaned Review Example", text, height=300)
+st.write(
+    """Notice how all of the characters were converted to lowercase, all punctuation was removed,
+         and all of the html markdown was removed."""
+)
 
-stemmed = '''['in',
+stemmed = """['in',
  '1974',
  'the',
  'teenag',
@@ -258,13 +262,15 @@ stemmed = '''['in',
  'titl',
  'brazil',
  'not',
- 'avail']'''
+ 'avail']"""
 
-st.text_area('Porter Stemmed Text',stemmed, height=300)
-st.write('''Here you can see that the stemmed text becomes a list (or vector) of word stems created according to the Porter algorithm.
-         Notice here that not all of the stems identified are even real words. Now we have to remove the stopwords.''')
+st.text_area("Porter Stemmed Text", stemmed, height=300)
+st.write(
+    """Here you can see that the stemmed text becomes a list (or vector) of word stems created according to the Porter algorithm.
+         Notice here that not all of the stems identified are even real words. Now we have to remove the stopwords."""
+)
 
-stemmed_nostop = '''['1974',
+stemmed_nostop = """['1974',
  'teenag',
  'martha',
  'moxley',
@@ -399,7 +405,7 @@ stemmed_nostop = '''['1974',
  'seven',
  'titl',
  'brazil',
- 'avail']'''
+ 'avail']"""
 
-st.text_area('Porter Stemmed Text Without Stopwords', stemmed_nostop, height = 300)
-st.write('''Now we're ready to do some Natural Language Processing!''')
+st.text_area("Porter Stemmed Text Without Stopwords", stemmed_nostop, height=300)
+st.write("""Now we're ready to do some Natural Language Processing!""")

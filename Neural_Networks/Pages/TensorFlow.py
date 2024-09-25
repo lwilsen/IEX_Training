@@ -2,7 +2,8 @@ import streamlit as st
 
 st.title("Convolutional Neural Network Using Tensorflow")
 
-st.markdown("""
+st.markdown(
+    """
 In our Streamlit app, we use a simple Neural Network (NN) to classify the images contained in the MNIST dataset. Here is a detailed explanation of each layer in our NN model and its role in the classification process:
 
 ### Model Architecture:
@@ -32,4 +33,5 @@ In our Streamlit app, we use a simple Neural Network (NN) to classify the images
 
 ### Summary:
 The NN model processes the MNIST images through a series of dense layers. It first flattens the input images, then uses a hidden dense layer to learn patterns, and finally outputs logits for each of the 10 classes. The model learns to recognize patterns and structures in the images, enabling it to accurately classify handwritten digits.
-""")
+"""
+)

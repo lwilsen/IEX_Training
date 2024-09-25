@@ -1,11 +1,12 @@
 import streamlit as st
 
-st.write('---')
-st.title('Convolutional Neural Network Using PyTorch')
+st.write("---")
+st.title("Convolutional Neural Network Using PyTorch")
 
 st.write("## Model Definition and Explanation")
 
-st.markdown("""
+st.markdown(
+    """
 In our Streamlit app, we use a Convolutional Neural Network (CNN) to classify the images contained in the MNIST dataset. Here is a detailed explanation of each layer in our CNN model and its role in the classification process:
 
 ### Model Architecture:
@@ -53,11 +54,18 @@ In our Streamlit app, we use a Convolutional Neural Network (CNN) to classify th
 
 ### Summary:
 The CNN model processes the MNIST images through a series of convolutional and pooling layers to extract features, which are then fed into fully connected layers for classification. The model learns to recognize patterns and structures in the images, enabling it to accurately classify handwritten digits.
-""")
+"""
+)
 
-st.write('---')
-st.write('Model Training and Validation')
-st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Neural_Networks/screenshots/Screenshot 2024-05-29 at 7.53.46 PM.png', caption="Train and Validation Accuracy through Epoch Progression")
+st.write("---")
+st.write("Model Training and Validation")
+st.image(
+    "/Users/lukewilsen/Desktop/IEX/IEX_Training/Neural_Networks/screenshots/Screenshot 2024-05-29 at 7.53.46 PM.png",
+    caption="Train and Validation Accuracy through Epoch Progression",
+)
 
-st.write('Graphs of model performance through epoch progression')
-st.image('/Users/lukewilsen/Desktop/IEX/IEX_Training/Neural_Networks/screenshots/Screenshot 2024-05-29 at 7.54.14 PM.png',caption='Model Performance')
+st.write("Graphs of model performance through epoch progression")
+st.image(
+    "/Users/lukewilsen/Desktop/IEX/IEX_Training/Neural_Networks/screenshots/Screenshot 2024-05-29 at 7.54.14 PM.png",
+    caption="Model Performance",
+)
