@@ -6,7 +6,7 @@ import torch.nn as nn
 
 loss_fn = nn.BCELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.015)
-    
+
 torch.manual_seed(1)
 
 loss_hist_train = [0] * num_epochs
@@ -21,16 +21,16 @@ for epoch in range(num_epochs):
         optimizer.step()
         optimizer.zero_grad()
         loss_hist_train[epoch] += loss.item()
-        is_correct = ((pred>=0.5).float() == y_batch).float()
+        is_correct = ((pred >= 0.5).float() == y_batch).float()
         accuracy_hist_train[epoch] += is_correct.mean()
 
-    loss_hist_train[epoch] /= n_train/batch_size
-    accuracy_hist_train[epoch] /= n_train/batch_size
+    loss_hist_train[epoch] /= n_train / batch_size
+    accuracy_hist_train[epoch] /= n_train / batch_size
 
     pred = model(x_valid)[:, 0]
     loss = loss_fn(pred, y_valid)
     loss_hist_valid[epoch] = loss.item()
-    is_correct = ((pred>=0.5).float() == y_valid).float()
+    is_correct = ((pred >= 0.5).float() == y_valid).float()
     accuracy_hist_valid[epoch] += is_correct.mean()
 
     # Code for epoch accuracy and loss recording
@@ -48,4 +48,4 @@ for epoch in range(num_epochs):
         is_correct = (torch.argmax(pred, dim=1) == y_batch).float()
         accuracy_hist_train += is_correct.sum()
     accuracy_hist_train /= len(train_dl.dataset)
-    print(f'Epoch {epoch}  Accuracy {accuracy_hist_train:.4f}')
+    print(f"Epoch {epoch}  Accuracy {accuracy_hist_train:.4f}")

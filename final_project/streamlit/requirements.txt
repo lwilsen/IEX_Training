@@ -1,8 +1,0 @@
-streamlit
-streamlit-drawable-canvas
-numpy
-pandas
-requests
-opencv-python
-matplotlib
-nltk
