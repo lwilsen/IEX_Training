@@ -16,4 +16,4 @@ def create_database(filename):
 
 
 if __name__ == "__main__":
-    create_database("my.db")
+    create_database("../DBs/my.db")

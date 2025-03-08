@@ -1,7 +1,7 @@
 import sqlite3
 
 try:
-    with sqlite3.connect("my.db") as conn:
+    with sqlite3.connect("../DBs/my.db") as conn:
         cur = conn.cursor()
         cur.execute("select id, name, priority from tasks")
         rows = cur.fetchall()
@@ -12,7 +12,7 @@ except sqlite3.Error as e:
     print(e)
 
 try:
-    with sqlite3.connect("my.db") as conn:
+    with sqlite3.connect("../DBs/my.db") as conn:
         cur = conn.cursor()
         cur.execute("select id, name, priority from tasks where id = ?", (1,))
         rows = cur.fetchall()

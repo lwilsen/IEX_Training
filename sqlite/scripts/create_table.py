@@ -21,7 +21,7 @@ def create_tables():
     ]
 
     try:
-        with sqlite3.connect("my.db") as conn:
+        with sqlite3.connect("../DBs/my.db") as conn:
             cursor = conn.cursor()
             for statement in sql_statements:
                 cursor.execute(statement)

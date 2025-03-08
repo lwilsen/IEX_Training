@@ -2,8 +2,8 @@ import pandas as pd
 import pickle
 import sqlite3
 
-train = pd.DataFrame(pickle.load(open("train.pkl", "rb")))
-test = pd.DataFrame(pickle.load(open("test.pkl", "rb")))
+train = pd.DataFrame(pickle.load(open("../data/train.pkl", "rb")))
+test = pd.DataFrame(pickle.load(open("../data/test.pkl", "rb")))
 
 
 def create_titanic(filename):
@@ -29,4 +29,4 @@ def create_titanic(filename):
 
 
 if __name__ == "__main__":
-    create_titanic("titanic.db")
+    create_titanic("../DBs/titanic.db")
