@@ -11,6 +11,8 @@ IEX_gameon_response.docx
 MNIST/.DS_Store
 
 NLP/aclImdb/
+NLP/.DS_Store
+NLP/movie_data.csv
 
 data.pkl
 
@@ -18,7 +20,6 @@ dominos_locations_expanded_mock_data.xlsx
 
 Neural_Networks/.DS_Store
 
-NLP/.DS_Store
 
 final_project
 
