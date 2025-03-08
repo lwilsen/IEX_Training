@@ -2,6 +2,8 @@
 
 The goal of this project was to predict the survival outcome of passengers on the titanic based on data from this Kaggle dataset: https://www.kaggle.com/c/titanic/data.
 
+---
+
 ## Methods and Libraries
 
 ### Data Preprocessing
