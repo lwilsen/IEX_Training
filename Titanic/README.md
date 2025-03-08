@@ -2,7 +2,7 @@
 
 The goal of this project was to predict the survival outcome of passengers on the titanic based on data from this Kaggle dataset: https://www.kaggle.com/c/titanic/data.
 
-Libraries Used
+### Libraries Used
 - pandas: Data manipulation and analysis.
 - numpy: Numerical operations and array handling.
 - matplotlib: Data visualization.
@@ -19,16 +19,16 @@ Libraries Used
 - accuracy_score: Model performance evaluation.
 - silhouette_samples: Clustering performance metric.
 - variance_inflation_factor: Multicollinearity check.
-Data Preprocessing
+### Data Preprocessing
 - astype: Converts data types for specific columns to ensure compatibility with machine learning models.
 - drop: Removes unnecessary columns or rows, such as irrelevant features or missing data.
 - fillna: Fills missing values with specific strategies (mean, median, mode, etc.).
 - groupby: Aggregates data, often used for feature engineering or to explore relationships between variables.
 - replace: Replaces certain values within the dataset, such as mapping categorical variables to numerical representations.
 - Feature scaling: Used StandardScaler, MinMaxScaler, and RobustScaler to standardize or normalize features.
-Dimensionality Reduction
+### Dimensionality Reduction
 - PCA (Principal Component Analysis): Reduces the dimensionality of the dataset by transforming features into a set of linearly uncorrelated components.
-Model Training and Evaluation
+### Model Training and Evaluation
 -  model_training: Trains machine learning models using a fitting process (e.g., calling .fit()).
 - piped_traineval: A custom function that likely streamlines the process of training and evaluating models through a pipeline.
 - train_eval: Another custom function used to assess model performance, possibly handling cross-validation or other evaluation metrics.
