@@ -11,7 +11,7 @@ This repo is divided into different topics that I learned about as a part of my 
 4. Neural Networks for Image Classification of Handwritten Digits (MNIST).
 5. Streamlit App Development
 6. Titanic Survival Predictions
-  - Initial Project
-  - Ensemble Techniques
-  - Dockerized version (work in progress)
+  a. Initial Project
+  b. Ensemble Techniques
+  c. Dockerized version (work in progress)
 7. Sqlite Training
