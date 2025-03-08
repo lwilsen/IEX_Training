@@ -62,26 +62,26 @@ st.write("---")
 pipeline_lr.fit(x_train, y_train)
 y_pred_lr = pipeline_lr.predict(x_test)
 pipeline_lr_acc = accuracy_score(y_pred_lr, y_test)
-st.write(f"Logistic Regression Accuracy = {pipeline_lr_acc.round(2)}")
-models[pipeline_lr.__class__.__name__] = pipeline_lr_acc.round(3)
+st.write(f"Logistic Regression Accuracy = {round(pipeline_lr_acc, 2)}")
+models[pipeline_lr.__class__.__name__] = round(pipeline_lr_acc, 3)
 
 pipeline_svc.fit(x_train, y_train)
 y_pred_svc = pipeline_svc.predict(x_test)
 pipeline_svc_acc = accuracy_score(y_pred_svc, y_test)
-st.write(f"Support Vector Machine Accuracy = {pipeline_svc_acc.round(2)}")
-models[pipeline_svc.__class__.__name__] = pipeline_svc_acc.round(3)
+st.write(f"Support Vector Machine Accuracy = {round(pipeline_svc_acc, 2)}")
+models[pipeline_svc.__class__.__name__] = round(pipeline_svc_acc, 3)
 
 pipeline_rf.fit(x_train, y_train)
 y_pred_rf = pipeline_rf.predict(x_test)
 pipeline_rf_acc = accuracy_score(y_pred_rf, y_test)
-st.write(f"Random Forest Accuracy = {pipeline_rf_acc.round(2)}")
-models[pipeline_rf.__class__.__name__] = pipeline_rf_acc.round(3)
+st.write(f"Random Forest Accuracy = {round(pipeline_rf_acc, 2)}")
+models[pipeline_rf.__class__.__name__] = round(pipeline_rf_acc, 3)
 
 pipeline_knn.fit(x_train, y_train)
 y_pred_knn = pipeline_knn.predict(x_test)
 pipeline_knn_acc = accuracy_score(y_pred_knn, y_test)
-st.write(f"K-Nearest Neighbors Accuracy = {pipeline_knn_acc.round(2)}")
-models[pipeline_knn.__class__.__name__] = pipeline_knn_acc.round(3)
+st.write(f"K-Nearest Neighbors Accuracy = {round(pipeline_knn_acc, 2)}")
+models[pipeline_knn.__class__.__name__] = round(pipeline_knn_acc, 3)
 st.write("---")
 
 st.write("Then I used the following ensemble methods and got the following accuracies:")
@@ -94,8 +94,8 @@ bagging_model = BaggingClassifier(
 bagging_model.fit(x_train, y_train)
 y_pred = bagging_model.predict(x_test)
 bag_accuracy = accuracy_score(y_test, y_pred)
-st.write(f"Bagging (w/ Logistic Regression) Model: {bag_accuracy.round(2)}")
-models[bagging_model.__class__.__name__] = bag_accuracy.round(3)
+st.write(f"Bagging (w/ Logistic Regression) Model: {round(bag_accuracy,2)}")
+models[bagging_model.__class__.__name__] = round(bag_accuracy,3)
 
 # Make all headers bold
 
@@ -119,7 +119,7 @@ y_pred = stacking_model.predict(x_test)
 stack_accuracy = accuracy_score(y_test, y_pred)
 
 st.write(f"Stacking Model Accuracy: {stack_accuracy:.2f}")
-models[stacking_model.__class__.__name__] = stack_accuracy.round(3)
+models[stacking_model.__class__.__name__] = round(stack_accuracy, 3)
 
 st.write("## Boosting")
 boosting_model = GradientBoostingClassifier(
@@ -130,7 +130,7 @@ y_pred = boosting_model.predict(x_test)
 boost_accuracy = accuracy_score(y_test, y_pred)
 
 st.write(f"Boosting Model Accuracy: {boost_accuracy:.2f}")
-models[boosting_model.__class__.__name__] = boost_accuracy.round(3)
+models[boosting_model.__class__.__name__] = round(boost_accuracy,3)
 
 st.write("## Majority Voting")
 st.write("""Base models: SVC, RF, KNN""")
@@ -143,7 +143,7 @@ y_pred = voting_model.predict(x_test)
 maj_accuracy = accuracy_score(y_test, y_pred)
 
 st.write(f"Majority Voting Model Accuracy: {maj_accuracy:.2f}")
-models[voting_model.__class__.__name__] = maj_accuracy.round(3)
+models[voting_model.__class__.__name__] = round(maj_accuracy,3)
 
 
 st.write(
