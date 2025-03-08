@@ -12,7 +12,7 @@ MNIST/.DS_Store
 
 NLP/aclImdb/
 NLP/.DS_Store
-NLP/movie_data.csv
+NLP/NLP_app/movie_data.csv
 
 data.pkl
 
