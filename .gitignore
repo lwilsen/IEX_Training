@@ -4,8 +4,6 @@
 
 .vscode/
 
-DOBBY_git_repo/
-
 Flask_module/
 
 IEX_gameon_response.docx
@@ -27,3 +25,5 @@ final_project
 helper.py
 
 Notes.ipynb
+
+LLM_W_API/movie_data.csv
