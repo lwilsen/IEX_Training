@@ -5,4 +5,7 @@ Welcome to my first training repo! This is a very basic, (and messy but soon to 
 This repo is divided into different topics that I learned about as a part of my internship with IEX (Iron Eagle X).
 
 ## Topics
-1. 
+1. Large Language Models (Cohere) Functionalized in a Streamlit App.
+2. Linear and Logistic Regression for Prediction.
+3. Natural Language Processing for Sentiment Analysis.
+4. Neural Networks for Image Classification of Handwritten Digits (MNIST).
